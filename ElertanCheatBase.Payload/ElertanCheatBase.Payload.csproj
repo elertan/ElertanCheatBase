@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9289F403-C66F-46A9-A835-07E539B395D8}</ProjectGuid>
+    <ProjectGuid>{70389732-07B3-4416-8DE6-CC835B10C1F9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ElertanCheatBase</RootNamespace>
-    <AssemblyName>ElertanCheatBase</AssemblyName>
+    <RootNamespace>ElertanCheatBase.Payload</RootNamespace>
+    <AssemblyName>ElertanCheatBase.Payload</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -50,14 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheatBase.cs" />
+    <Compile Include="Base.cs" />
+    <Compile Include="InjectorInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ElertanCheatBase.Payload\ElertanCheatBase.Payload.csproj">
-      <Project>{70389732-07b3-4416-8de6-cc835b10c1f9}</Project>
-      <Name>ElertanCheatBase.Payload</Name>
-    </ProjectReference>
+    <Compile Include="VisualRenderType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="EasyHook32.dll">

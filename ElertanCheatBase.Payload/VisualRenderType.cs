@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElertanCheatBase
+namespace ElertanCheatBase.Payload
 {
-    public class Class1
+    public enum VisualRenderType
     {
+        Direct3D9,
+        None
     }
 }
