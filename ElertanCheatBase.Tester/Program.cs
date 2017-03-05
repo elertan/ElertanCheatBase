@@ -12,14 +12,22 @@ namespace ElertanCheatBase.Tester
         static void Main(string[] args)
         {
             // Setup cheatbase
-            var cheatBase = new CheatBase("csgo")
+            var cheatBase = new CheatBase("osu!")
             {
                 InternalMode = true,
                 InternalPayloadPath = Payload.Main.AssemblyPath,
                 VisualRenderType = VisualRenderType.Direct3D9
             };
             // Run
-            cheatBase.Run();
+            try
+            {
+                cheatBase.Run();
+            }
+            catch (InjectPayloadFailedException ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
     }
 }

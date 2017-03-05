@@ -10,12 +10,13 @@ using EasyHook;
 
 namespace ElertanCheatBase.Payload
 {
-    public abstract class Base : IEntryPoint
+    public class Main : IEntryPoint
     {
         public static bool KeepRunning = true;
+        public HookBase HookBase;
         private readonly InjectorInterface _interface;
 
-        protected Base(RemoteHooking.IContext context, string channelName)
+        public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
             // Connect to server object using provided channel name
             _interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
@@ -24,14 +25,16 @@ namespace ElertanCheatBase.Payload
             _interface.Ping();
         }
 
-        public void Run(RemoteHooking.IContext context, string channelName)
+        public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
             // Injection is now complete and the server interface is connected
             _interface.IsInstalled(RemoteHooking.GetCurrentProcessId());
 
             var process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
+            if (HookBase == null) throw new Exception("HookBase must be set");
             // Install
-            //Core.Install(process);
+            Core.VisualRenderType = visualRenderType;
+            Core.Install(process, HookBase);
 
             try
             {
@@ -42,7 +45,7 @@ namespace ElertanCheatBase.Payload
             {
             }
 
-            //Core.Uninstall();
+            Core.Uninstall();
 
             // Finalise cleanup of hooks
             LocalHook.Release();

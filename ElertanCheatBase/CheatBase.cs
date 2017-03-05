@@ -4,16 +4,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ElertanCheatBase.Exceptions;
 using ElertanCheatBase.Payload;
 
 namespace ElertanCheatBase
 {
     public class CheatBase
     {
+        public List<object> InternalPayloadParameters { get; set; } = new List<object>();
         /// <summary>
         /// Process used to cheat on
         /// </summary>
-        public Process TargetProcess { get; private set; }
+        public Process TargetProcess { get; }
         /// <summary>
         /// Determines wether to inject a payload into the target or use external features
         /// </summary>
@@ -46,7 +48,18 @@ namespace ElertanCheatBase
 
         public void Run()
         {
-            throw new NotImplementedException();
+            if (InternalMode)
+            {
+                if (InternalPayloadPath.Length == 0) throw new InternalPayloadPathNotSetException();
+                InternalPayloadParameters.Insert(0, VisualRenderType);
+                var parameters = InternalPayloadParameters.ToArray();
+                if (!PayloadInjector.InjectPayload(TargetProcess, InternalPayloadPath, parameters))
+                    throw new InjectPayloadFailedException();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

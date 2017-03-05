@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheatBase.cs" />
+    <Compile Include="Exceptions\InternalPayloadPathNotSetException.cs" />
+    <Compile Include="Exceptions\InjectPayloadFailedException.cs" />
+    <Compile Include="PayloadInjector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
