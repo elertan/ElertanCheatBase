@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using EasyHook;
 using ElertanCheatBase.Payload.Interfaces;
 using SharpDX;
@@ -13,6 +9,7 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
 {
     internal class DirectD3D9 : IHook
     {
+        private LocalHook _drawIndexedPrimitiveHook;
         private LocalHook _endSceneLocalHook;
         private HookBase _hookBase;
 
@@ -28,13 +25,22 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
                     DeviceType.NullReference,
                     IntPtr.Zero,
                     CreateFlags.HardwareVertexProcessing,
-                    new PresentParameters { BackBufferWidth = 1, BackBufferHeight = 1 });
+                    new PresentParameters {BackBufferWidth = 1, BackBufferHeight = 1});
 
                 var baseAddress = Marshal.ReadIntPtr(device.NativePointer);
 
                 // EndSceneHook
-                _endSceneLocalHook = LocalHook.Create(Marshal.ReadIntPtr(baseAddress, (int)VmtMethods.EndScene * IntPtr.Size), new DEndScene(EndSceneHook), this);
-                _endSceneLocalHook.ThreadACL.SetExclusiveACL(new[] { 0 });
+                _endSceneLocalHook =
+                    LocalHook.Create(Marshal.ReadIntPtr(baseAddress, (int) VmtMethods.EndScene * IntPtr.Size),
+                        new DEndScene(EndSceneHook), this);
+                _endSceneLocalHook.ThreadACL.SetExclusiveACL(new[] {0});
+
+                // DrawIndexedPrimitiveHook
+                _drawIndexedPrimitiveHook =
+                    LocalHook.Create(
+                        Marshal.ReadIntPtr(baseAddress, (int) VmtMethods.DrawIndexedPrimitive * IntPtr.Size),
+                        new DDrawIndexedPrimitive(DrawIndexedPrimitiveHook), this);
+                _drawIndexedPrimitiveHook.ThreadACL.SetExclusiveACL(new[] {0});
             }
         }
 
@@ -43,20 +49,46 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
             _endSceneLocalHook?.Dispose();
         }
 
-        public int EndSceneHook(IntPtr direct3DDevice)
+        public int EndSceneHook(IntPtr devicePtr)
         {
-            var device = (Device)direct3DDevice;
-
-            _hookBase.DirectD3D9_EndScene(device);
-
+            var device = (Device) devicePtr;
+            // Handle Endscene
+            _hookBase.Direct3D9_EndScene(device);
             device.EndScene();
+            return Result.Ok.Code;
+        }
+
+        public int DrawIndexedPrimitiveHook(IntPtr devicePtr,
+            PrimitiveType primitiveType,
+            int baseVertexIndex,
+            int minVertexIndex,
+            int numVertices,
+            int startIndex,
+            int primCount)
+        {
+            var device = (Device) devicePtr;
+
+            device.DrawIndexedPrimitive(primitiveType, baseVertexIndex, minVertexIndex, numVertices, startIndex,
+                primCount);
+
             return Result.Ok.Code;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall,
             CharSet = CharSet.Unicode,
             SetLastError = true)]
-        private delegate int DEndScene(IntPtr direct3DDevice);
+        private delegate int DEndScene(IntPtr devicePtr);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall,
+            CharSet = CharSet.Unicode,
+            SetLastError = true)]
+        private delegate int DDrawIndexedPrimitive(IntPtr devicePtr,
+            PrimitiveType primitiveType,
+            int baseVertexIndex,
+            int minVertexIndex,
+            int numVertices,
+            int startIndex,
+            int primCount);
 
         internal enum VmtMethods
         {

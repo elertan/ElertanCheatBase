@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using SharpDX.Direct3D9;
 
 namespace ElertanCheatBase.Payload
@@ -17,12 +12,20 @@ namespace ElertanCheatBase.Payload
 
         public virtual void Initialize(Process p)
         {
-            
         }
 
-        public virtual void DirectD3D9_EndScene(Device device)
+        public virtual void Direct3D9_EndScene(Device device)
         {
-            
+        }
+
+        public virtual void Direct3D9_DrawIndexedPrimitive(Device device,
+            PrimitiveType primitiveType,
+            int baseVertexIndex,
+            int minVertexIndex,
+            int numVertices,
+            int startIndex,
+            int primCount)
+        {
         }
     }
 }

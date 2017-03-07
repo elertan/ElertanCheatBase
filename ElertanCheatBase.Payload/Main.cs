@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using EasyHook;
 
 namespace ElertanCheatBase.Payload
@@ -13,8 +8,11 @@ namespace ElertanCheatBase.Payload
     public class Main : IEntryPoint
     {
         public static bool KeepRunning = true;
-        public HookBase HookBase;
         private readonly InjectorInterface _interface;
+#if DEBUG
+        private bool _debuggerHadBeenAttached;
+#endif
+        public HookBase HookBase;
 
         public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
@@ -38,8 +36,19 @@ namespace ElertanCheatBase.Payload
 
             try
             {
+#if DEBUG
+                // Instant launch debugger on debug build
+                Debugger.Launch();
+#endif
                 while (KeepRunning)
+                {
+                    // When debugging, exit the dll when the debugging had stopped, this is not applicable for a release build
+#if DEBUG
+                    if (!Debugger.IsAttached && _debuggerHadBeenAttached) KeepRunning = false;
+                    if (Debugger.IsAttached && !_debuggerHadBeenAttached) _debuggerHadBeenAttached = true;
+#endif
                     Thread.Sleep(500);
+                }
             }
             catch
             {

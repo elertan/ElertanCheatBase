@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using ElertanCheatBase.Payload;
 using SharpDX.Direct3D9;
 using SharpDX.Mathematics.Interop;
@@ -13,19 +7,34 @@ namespace ElertanCheatBase.Tester.Payload
 {
     public class HookBase : ElertanCheatBase.Payload.HookBase
     {
+        private readonly int max = 30;
+        private readonly int min = 5;
+        private bool _increasing = true;
+        private int counter;
+        private int current = 11;
+
         public override void Initialize(Process p)
         {
             base.Initialize(p);
         }
 
-        public override void DirectD3D9_EndScene(Device device)
+        public override void Direct3D9_EndScene(Device device)
         {
-            base.DirectD3D9_EndScene(device);
+            base.Direct3D9_EndScene(device);
 
-            using (var font = new Font(device, new FontDescription {FaceName = "Arial", Width = 21, Height = 13}))
+            //device.DrawRectangle(new RawPoint(50, 50),
+            //    new Size2(device.Viewport.Width - 100, device.Viewport.Height - 100),
+            //    new RawColorBGRA(255, 255, 255, 100));
+            device.DrawText("Menu", current, new RawPoint(70, 120), new RawColorBGRA(0, 0, 0, 255));
+
+            if (counter > 60)
             {
-                font.DrawText(null, "Test", 50, 50, new RawColorBGRA(255, 255, 255, 255));
+                if (current > max || current < min) _increasing = !_increasing;
+                if (_increasing) current++;
+                else current--;
+                counter = 0;
             }
+            counter++;
         }
     }
 }
