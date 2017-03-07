@@ -21,6 +21,7 @@ namespace ElertanCheatBase.Payload
 
         public static void DrawText(this Device device, string text, int fontSize, RawPoint pt, RawColorBGRA color)
         {
+            if (text.Length == 0) text = "ERROR: EMPTY STRING GIVEN";
             var fontWidth = device.Viewport.Width * fontSize / 1250;
             var fontHeight = Convert.ToInt32(fontWidth * 1.7);
             using (

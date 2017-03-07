@@ -46,6 +46,7 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
 
         public void Uninstall()
         {
+            _drawIndexedPrimitiveHook?.Dispose();
             _endSceneLocalHook?.Dispose();
         }
 
@@ -68,6 +69,8 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
         {
             var device = (Device) devicePtr;
 
+            _hookBase.Direct3D9_DrawIndexedPrimitive(device, primitiveType, baseVertexIndex, minVertexIndex, numVertices,
+                startIndex, primCount);
             device.DrawIndexedPrimitive(primitiveType, baseVertexIndex, minVertexIndex, numVertices, startIndex,
                 primCount);
 

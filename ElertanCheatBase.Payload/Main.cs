@@ -13,6 +13,7 @@ namespace ElertanCheatBase.Payload
         private bool _debuggerHadBeenAttached;
 #endif
         public HookBase HookBase;
+        public Action InitializeAction;
 
         public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
@@ -23,23 +24,27 @@ namespace ElertanCheatBase.Payload
             _interface.Ping();
         }
 
+        public Process Process { get; set; }
+
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
             // Injection is now complete and the server interface is connected
             _interface.IsInstalled(RemoteHooking.GetCurrentProcessId());
 
-            var process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
+            Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             if (HookBase == null) throw new Exception("HookBase must be set");
             // Install
             Core.VisualRenderType = visualRenderType;
-            Core.Install(process, HookBase);
+            Core.Install(Process, HookBase);
+
+#if DEBUG
+            // Instant launch debugger on debug build
+            Debugger.Launch();
+#endif
+            InitializeAction?.Invoke();
 
             try
             {
-#if DEBUG
-                // Instant launch debugger on debug build
-                Debugger.Launch();
-#endif
                 while (KeepRunning)
                 {
                     // When debugging, exit the dll when the debugging had stopped, this is not applicable for a release build
