@@ -95,24 +95,24 @@ namespace ElertanCheatBase.Tester.Payload
 #define Bomb (NumVertices == 4329 && PrimitiveCount == 3779)
              */
 
-        private bool IsTerrorist(int NumVertices, int PrimitiveCount)
+        private bool IsTerrorist(int numVertices, int primitiveCount)
         {
-            return NumVertices == 2118 && PrimitiveCount == 3354 || // LEGS
-                   NumVertices == 4523 && PrimitiveCount == 6700 || // BODY (NOT WORKING)
-                   NumVertices == 1677 && PrimitiveCount == 2713 || NumVertices == 1761 && PrimitiveCount == 2681;
+            return numVertices == 2118 && primitiveCount == 3354 || // LEGS
+                   numVertices == 4523 && primitiveCount == 6700 || // BODY (NOT WORKING)
+                   numVertices == 1677 && primitiveCount == 2713 || numVertices == 1761 && primitiveCount == 2681;
             // HEAD
         }
 
-        private bool IsCounterTerrorist(int NumVertices, int PrimitiveCount)
+        private bool IsCounterTerrorist(int numVertices, int primitiveCount)
         {
             // LEGS BODY NOT WORKING EITHER
-            return NumVertices == 1986 && PrimitiveCount == 3044 || NumVertices == 1889 && PrimitiveCount == 3088 ||
-                   NumVertices == 2138 && PrimitiveCount == 3424 || NumVertices == 2531 && PrimitiveCount == 3888 ||
-                   NumVertices == 2416 && PrimitiveCount == 3778 || NumVertices == 3162 && PrimitiveCount == 5182 ||
-                   NumVertices == 3816 && PrimitiveCount == 5930 || NumVertices == 2587 && PrimitiveCount == 4334 ||
-                   NumVertices == 3606 && PrimitiveCount == 5856 || NumVertices == 1372 && PrimitiveCount == 2286 ||
-                   NumVertices == 1310 && PrimitiveCount == 2302 || NumVertices == 1352 && PrimitiveCount == 2268 ||
-                   NumVertices == 1134 && PrimitiveCount == 2024 || NumVertices == 1430 && PrimitiveCount == 2422;
+            return numVertices == 1986 && primitiveCount == 3044 || numVertices == 1889 && primitiveCount == 3088 ||
+                   numVertices == 2138 && primitiveCount == 3424 || numVertices == 2531 && primitiveCount == 3888 ||
+                   numVertices == 2416 && primitiveCount == 3778 || numVertices == 3162 && primitiveCount == 5182 ||
+                   numVertices == 3816 && primitiveCount == 5930 || numVertices == 2587 && primitiveCount == 4334 ||
+                   numVertices == 3606 && primitiveCount == 5856 || numVertices == 1372 && primitiveCount == 2286 ||
+                   numVertices == 1310 && primitiveCount == 2302 || numVertices == 1352 && primitiveCount == 2268 ||
+                   numVertices == 1134 && primitiveCount == 2024 || numVertices == 1430 && primitiveCount == 2422;
         }
     }
 }

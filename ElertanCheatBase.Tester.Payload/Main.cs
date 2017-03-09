@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using EasyHook;
 using ElertanCheatBase.Payload;
 
@@ -27,18 +28,22 @@ namespace ElertanCheatBase.Tester.Payload
                 Size = clientModule.ModuleMemorySize
             };
 
-            // Might be due to old pattern, might have to look for one myself
-            var pattern =
-                "8D 34 85 ?? ?? ?? ??" //lea esi, [eax*4+client.dll+xxxx] -> 3
-                + " 89 15 ?? ?? ?? ??" //mov [client.dll+xxxx],edx
-                + " 8B 41 08"          //mov eax,[ecx+08]
-                + " 8B 48 ??";         //mov ecx,[eax+04] -> 18
-            var address = scanner.Scan(pattern, 3); // [eax*4+client.dll+xxxx]
-            var value1 = Memory.ReadInt32(address);
-            var address2 = scanner.Scan(pattern, 18); // mov ecx,[eax+04]
-            var value2 = Memory.ReadByte(address2);
-            // This isnt right!
-            var localPlayerAddress = new IntPtr(clientModule.BaseAddress.ToInt32() - value1 + value2);
+            //// Might be due to old pattern, might have to look for one myself
+            //var pattern =
+            //    "8D 34 85 ?? ?? ?? ??" //lea esi, [eax*4+client.dll+xxxx] -> 3
+            //    + " 89 15 ?? ?? ?? ??" //mov [client.dll+xxxx],edx
+            //    + " 8B 41 08"          //mov eax,[ecx+08]
+            //    + " 8B 48 ??";         //mov ecx,[eax+04] -> 18
+            //var address = scanner.Scan(pattern, 3); // [eax*4+client.dll+xxxx]
+            //var value1 = Memory.ReadInt32(address);
+            //var address2 = scanner.Scan(pattern, 18); // mov ecx,[eax+04]
+            //var value2 = Memory.ReadByte(address2);
+            //// This isnt right!
+            //var localPlayerAddress = new IntPtr(clientModule.BaseAddress.ToInt32() - value1 + value2);
+            var pattern = "1C 52 ? ? ? ? ? ? ? 88 ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? 88 26";
+            var address = scanner.Scan(pattern, 13);
+            var playerBaseAddress = Marshal.ReadIntPtr(address);
+            int hp = Marshal.ReadInt32(playerBaseAddress, 0xFC);
         }
     }
 }
