@@ -12,6 +12,7 @@ namespace ElertanCheatBase.Payload
 #if DEBUG
         private bool _debuggerHadBeenAttached;
 #endif
+        public Process Process { get; set; }
         public HookBase HookBase;
         public Action InitializeAction;
 
@@ -24,23 +25,19 @@ namespace ElertanCheatBase.Payload
             _interface.Ping();
         }
 
-        public Process Process { get; set; }
-
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
-            // Injection is now complete and the server interface is connected
-            _interface.IsInstalled(RemoteHooking.GetCurrentProcessId());
-
-            Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
-            if (HookBase == null) throw new Exception("HookBase must be set");
-            // Install
-            Core.VisualRenderType = visualRenderType;
-            Core.Install(Process, HookBase);
-
 #if DEBUG
             // Instant launch debugger on debug build
             Debugger.Launch();
 #endif
+            Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
+            if (HookBase == null) throw new Exception("HookBase must be set");
+            // Install
+
+            Core.VisualRenderType = visualRenderType;
+            Core.Install(Process, HookBase);
+
             InitializeAction?.Invoke();
 
             try

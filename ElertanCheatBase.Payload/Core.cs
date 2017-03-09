@@ -19,6 +19,8 @@ namespace ElertanCheatBase.Payload
 
         public static void Install(Process p, HookBase hb)
         {
+            Memory.Initialize(p);
+
             HookBase = hb;
             HookBase.Initialize(p);
 
