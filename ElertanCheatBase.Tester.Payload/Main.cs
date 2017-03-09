@@ -27,6 +27,7 @@ namespace ElertanCheatBase.Tester.Payload
                 Size = clientModule.ModuleMemorySize
             };
 
+            // Might be due to old pattern, might have to look for one myself
             var pattern =
                 "8D 34 85 ?? ?? ?? ??" //lea esi, [eax*4+client.dll+xxxx] -> 3
                 + " 89 15 ?? ?? ?? ??" //mov [client.dll+xxxx],edx
