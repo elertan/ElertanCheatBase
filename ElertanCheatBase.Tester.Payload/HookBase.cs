@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using ElertanCheatBase.Tester.Payload.Models;
 using SharpDX.Direct3D9;
 
 //#define ctLegs  ((NumVertices == 2118 && PrimitiveCount == 3354))
@@ -60,7 +61,7 @@ namespace ElertanCheatBase.Tester.Payload
             {
                 device.SetRenderState(RenderState.ZEnable, false);
                 device.SetRenderState(RenderState.FillMode, 3);
-                device.SetTexture(0, _redTexture);
+                device.SetTexture(0, CsLocalPlayer.Team == CsLocalPlayer.CsTeam.CounterTerrorist ? _blueTexture : _redTexture);
                 device.DrawIndexedPrimitive(primitiveType, baseVertexIndex, minVertexIndex, numVertices, startIndex,
                     primCount);
                 device.SetRenderState(RenderState.ZEnable, true);
@@ -71,7 +72,7 @@ namespace ElertanCheatBase.Tester.Payload
             {
                 device.SetRenderState(RenderState.ZEnable, false);
                 device.SetRenderState(RenderState.FillMode, 3);
-                device.SetTexture(0, _blueTexture);
+                device.SetTexture(0, CsLocalPlayer.Team == CsLocalPlayer.CsTeam.Terrorist ? _blueTexture : _redTexture);
                 device.DrawIndexedPrimitive(primitiveType, baseVertexIndex, minVertexIndex, numVertices, startIndex,
                     primCount);
                 device.SetRenderState(RenderState.ZEnable, true);
