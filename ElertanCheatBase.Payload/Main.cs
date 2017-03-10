@@ -28,7 +28,7 @@ namespace ElertanCheatBase.Payload
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
 #if DEBUG
-            // Instant launch debugger on debug build
+            // Instant launch debugger on debug build (does cause crash when csgo is not already running)
             Debugger.Launch();
 #endif
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());

@@ -1,29 +1,19 @@
 ﻿using System;
-using ElertanCheatBase.Payload;
+using System.Windows.Forms;
 
-namespace ElertanCheatBase.Tester
+namespace ElertanCheatBase.Csgo
 {
-    internal class Program
+    static class Program
     {
-        private static void Main(string[] args)
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
         {
-            // Setup cheatbase
-            var cheatBase = new CheatBase("csgo")
-            {
-                InternalMode = true,
-                InternalPayloadPath = Payload.Main.AssemblyPath,
-                VisualRenderType = VisualRenderType.Direct3D9
-            };
-            // Run
-            try
-            {
-                cheatBase.Run();
-            }
-            catch (InjectPayloadFailedException ex)
-            {
-                Console.WriteLine(ex);
-                throw;
-            }
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
         }
     }
 }

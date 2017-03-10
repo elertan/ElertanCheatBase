@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.IO;
-using ElertanCheatBase.Tester.Payload.Models;
+using ElertanCheatBase.Csgo.Payload.Models;
 using SharpDX.Direct3D9;
 
 //#define ctLegs  ((NumVertices == 2118 && PrimitiveCount == 3354))
@@ -14,7 +14,7 @@ using SharpDX.Direct3D9;
 //#define CounterTerrorist ((ctLegs)||(ctBody)||(ctHead))
 //#define Terrorist ((tLegs)||(tBody)||(tHead))
 
-namespace ElertanCheatBase.Tester.Payload
+namespace ElertanCheatBase.Csgo.Payload
 {
     public class HookBase : ElertanCheatBase.Payload.HookBase
     {

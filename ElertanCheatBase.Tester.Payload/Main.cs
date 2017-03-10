@@ -1,13 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
+﻿using System.Reflection;
 using EasyHook;
 using ElertanCheatBase.Payload;
-using ElertanCheatBase.Tester.Payload.Models;
 
-namespace ElertanCheatBase.Tester.Payload
+namespace ElertanCheatBase.Csgo.Payload
 {
     public class Main : ElertanCheatBase.Payload.Main
     {
