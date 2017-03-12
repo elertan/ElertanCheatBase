@@ -9,10 +9,12 @@ namespace ElertanCheatBase.Payload
 {
     public static class Memory
     {
+        public static Process Process { get; private set; }
         public static ProcessModule[] Modules { get; private set; }
 
         public static void Initialize(Process p)
         {
+            Process = p;
             Modules = new ProcessModule[p.Modules.Count];
             for (var i = 0; i < p.Modules.Count; i++)
             {

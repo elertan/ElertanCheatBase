@@ -8,7 +8,6 @@ namespace ElertanCheatBase.Payload
     public class Main : IEntryPoint
     {
         public static bool KeepRunning = true;
-        private readonly InjectorInterface _interface;
 #if DEBUG
         private bool _debuggerHadBeenAttached;
 #endif
@@ -19,10 +18,10 @@ namespace ElertanCheatBase.Payload
         public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
             // Connect to server object using provided channel name
-            _interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
+            var @interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
 
             // If Ping fails then the Run method will be not be called
-            _interface.Ping();
+            @interface.Ping();
         }
 
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)

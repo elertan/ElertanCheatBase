@@ -1,7 +1,10 @@
 using System.Diagnostics;
 using System.IO;
 using ElertanCheatBase.Csgo.Payload.Models;
+using ElertanCheatBase.Payload;
+using SharpDX;
 using SharpDX.Direct3D9;
+using SharpDX.Mathematics.Interop;
 
 //#define ctLegs  ((NumVertices == 2118 && PrimitiveCount == 3354))
 //#define ctBody  ((NumVertices == 4523 && PrimitiveCount == 6700 ))

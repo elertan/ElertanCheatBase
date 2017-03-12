@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using EasyHook;
+using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Interfaces;
 using SharpDX;
 using SharpDX.Direct3D9;
+using SharpDX.Mathematics.Interop;
 
 namespace ElertanCheatBase.Payload.VisualRenderHooks
 {
@@ -56,6 +58,11 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
             // Handle Endscene
             _hookBase.Direct3D9_EndScene(device);
             device.EndScene();
+
+            // VisualOverlay
+            VisualOverlay.Draw(device);
+            device.DrawText($"X: {MouseHook.MousePosition.X} Y: {MouseHook.MousePosition.X}", 32, new RawPoint(50, 50), new RawColorBGRA(0,0,255,255));
+
             return Result.Ok.Code;
         }
 

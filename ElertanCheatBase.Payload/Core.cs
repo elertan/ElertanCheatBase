@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Interfaces;
 using ElertanCheatBase.Payload.VisualRenderHooks;
 
@@ -20,6 +21,7 @@ namespace ElertanCheatBase.Payload
         public static void Install(Process p, HookBase hb)
         {
             Memory.Initialize(p);
+            MouseHook.HookMouse();
 
             HookBase = hb;
             HookBase.Initialize(p);
