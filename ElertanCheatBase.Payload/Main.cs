@@ -12,9 +12,6 @@ namespace ElertanCheatBase.Payload
     public class Main : IEntryPoint
     {
         public static bool KeepRunning = true;
-        public static Process Process { get; set; }
-        public static Dictionary<string, ModuleInfo> ModuleInfos { get; private set; } = new Dictionary<string, ModuleInfo>();
-        private readonly InjectorInterface _interface;
         private static Thread _consoleThread;
 #if DEBUG
         private bool _debuggerHadBeenAttached;
@@ -27,17 +24,20 @@ namespace ElertanCheatBase.Payload
             // Connect to server object using provided channel name
             var @interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
 
-            // If Ping fails then the Run method will be not be called
-            _interface.Ping();
-
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             foreach (ProcessModule processModule in Process.Modules)
-            {
-                ModuleInfos.Add(processModule.ModuleName, new ModuleInfo { Name = processModule.ModuleName, MemorySize = processModule.ModuleMemorySize, Address = processModule.BaseAddress });
-            }
-        }
+                ModuleInfos.Add(processModule.ModuleName,
+                    new ModuleInfo
+                    {
+                        Name = processModule.ModuleName,
+                        MemorySize = processModule.ModuleMemorySize,
+                        Address = processModule.BaseAddress
+                    });
             @interface.Ping();
         }
+
+        public static Process Process { get; set; }
+        public static Dictionary<string, ModuleInfo> ModuleInfos { get; } = new Dictionary<string, ModuleInfo>();
 
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
