@@ -1,6 +1,8 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using EasyHook;
 using ElertanCheatBase.Payload;
+using ElertanCheatBase.Payload.VisualOverlayItems;
 
 namespace ElertanCheatBase.Csgo.Payload
 {
@@ -17,7 +19,17 @@ namespace ElertanCheatBase.Csgo.Payload
 
         private void Initialize()
         {
-            
+            VisualOverlay.OverlayVisible = true;
+            VisualOverlay.Windows = BuildVisualOverlay();
+        }
+
+        private List<Window> BuildVisualOverlay()
+        {
+            var windows = new List<Window>();
+            var mainWindow = new Window();
+
+            windows.Add(mainWindow);
+            return windows;
         }
     }
 }

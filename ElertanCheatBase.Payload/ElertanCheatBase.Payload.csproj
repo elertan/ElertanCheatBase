@@ -56,6 +56,7 @@
     <Compile Include="Direct3D9HelperMethods.cs" />
     <Compile Include="EncryptedString.cs" />
     <Compile Include="InputHooks\KeyboardHook.cs" />
+    <Compile Include="InputHooks\MouseHook.cs" />
     <Compile Include="Interfaces\IHook.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Core.cs" />
@@ -63,6 +64,8 @@
     <Compile Include="HookBase.cs" />
     <Compile Include="Memory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VisualOverlay.cs" />
+    <Compile Include="VisualOverlayItems\Window.cs" />
     <Compile Include="VisualRenderHooks\DirectD3D9.cs" />
     <Compile Include="VisualRenderType.cs" />
     <Compile Include="WinApi.cs" />
