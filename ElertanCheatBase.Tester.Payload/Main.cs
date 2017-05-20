@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using EasyHook;
 using ElertanCheatBase.Payload;
+using ElertanCheatBase.Payload.VisualOverlayItems;
 
-namespace ElertanCheatBase.Tester.Payload
+namespace ElertanCheatBase.Csgo.Payload
 {
     public class Main : ElertanCheatBase.Payload.Main
     {
@@ -19,13 +19,17 @@ namespace ElertanCheatBase.Tester.Payload
 
         private void Initialize()
         {
-            var scanner = new Memory.SignatureScanner
-            {
-                Address = ModuleInfos["client.dll"].Address,
-                ScanSize = ModuleInfos["client.dll"].MemorySize
-            };
-            var address = scanner.Scan("A3 ? ? ? ? C7 05 ? ? ? ? ? ? ? ? E8 ? ? ? ? 59 C3 6A") + 0x1;
-            address = Memory.ReadIntPtr(address, 0x2C);
+            VisualOverlay.OverlayVisible = true;
+            VisualOverlay.Windows = BuildVisualOverlay();
+        }
+
+        private List<Window> BuildVisualOverlay()
+        {
+            var windows = new List<Window>();
+            var mainWindow = new Window();
+
+            windows.Add(mainWindow);
+            return windows;
         }
     }
 }

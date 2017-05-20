@@ -16,7 +16,20 @@ namespace ElertanCheatBase.Payload
                 Right = pt.X + size.Width,
                 Bottom = pt.Y + size.Height
             };
-            device.Clear(ClearFlags.Target, color, 0, 0, new[] {rect});
+            device.Clear(ClearFlags.Target, color, 0, 0, new[] { rect });
+
+            //using (var line = new Line(device))
+            //{
+            //    line.Width = size.Height;
+            //    //line.Antialias = true;
+            //    var extraHeight = (float)size.Width / 2;
+            //    var vertices = new[]
+            //    {
+            //        new RawVector2(pt.X, pt.Y + extraHeight),
+            //        new RawVector2(pt.X + size.Width, pt.Y + extraHeight)
+            //    };
+            //    line.Draw(vertices, color);
+            //}
         }
 
         public static void DrawText(this Device device, string text, int fontSize, RawPoint pt, RawColorBGRA color)

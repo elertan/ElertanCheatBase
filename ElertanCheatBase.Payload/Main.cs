@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Threading;
 using EasyHook;
+using Microsoft.Win32.SafeHandles;
 
 namespace ElertanCheatBase.Payload
 {
@@ -12,6 +15,7 @@ namespace ElertanCheatBase.Payload
         public static Process Process { get; set; }
         public static Dictionary<string, ModuleInfo> ModuleInfos { get; private set; } = new Dictionary<string, ModuleInfo>();
         private readonly InjectorInterface _interface;
+        private static Thread _consoleThread;
 #if DEBUG
         private bool _debuggerHadBeenAttached;
 #endif
@@ -21,7 +25,7 @@ namespace ElertanCheatBase.Payload
         public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
             // Connect to server object using provided channel name
-            _interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
+            var @interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
 
             // If Ping fails then the Run method will be not be called
             _interface.Ping();
@@ -32,19 +36,22 @@ namespace ElertanCheatBase.Payload
                 ModuleInfos.Add(processModule.ModuleName, new ModuleInfo { Name = processModule.ModuleName, MemorySize = processModule.ModuleMemorySize, Address = processModule.BaseAddress });
             }
         }
+            @interface.Ping();
+        }
 
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
-            // Injection is now complete and the server interface is connected
-            //_interface.IsInstalled(RemoteHooking.GetCurrentProcessId());
-
 #if DEBUG
-            // Instant launch debugger on debug build
+            // Instant launch debugger on debug build (does cause crash when csgo is not already running)
             Debugger.Launch();
-#endif
 
+            // Create console for testing
+            CreateConsole();
+#endif
+            Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             if (HookBase == null) throw new Exception("HookBase must be set");
             // Install
+
             Core.VisualRenderType = visualRenderType;
             Core.Install(Process, HookBase);
 
@@ -62,14 +69,39 @@ namespace ElertanCheatBase.Payload
                     Thread.Sleep(500);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                // ignored
             }
 
+            _consoleThread.Abort();
+#if DEBUG
+            WinApi.FreeConsole();
+#endif
             Core.Uninstall();
 
             // Finalise cleanup of hooks
             LocalHook.Release();
+        }
+
+        private static void CreateConsole()
+        {
+            _consoleThread = new Thread(() =>
+            {
+                WinApi.AllocConsole();
+                var stdHandle = WinApi.GetStdHandle(WinApi.STD_OUTPUT_HANDLE);
+                var safeFileHandle = new SafeFileHandle(stdHandle, true);
+                var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
+                var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
+                var standardOutput = new StreamWriter(fileStream, encoding);
+                standardOutput.AutoFlush = true;
+                Console.SetOut(standardOutput);
+
+                Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
+                while (true)
+                    Console.Read();
+            });
+            _consoleThread.Start();
         }
     }
 }
