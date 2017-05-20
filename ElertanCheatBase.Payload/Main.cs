@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Threading;
 using EasyHook;
+using Microsoft.Win32.SafeHandles;
 
 namespace ElertanCheatBase.Payload
 {
@@ -12,7 +15,6 @@ namespace ElertanCheatBase.Payload
 #if DEBUG
         private bool _debuggerHadBeenAttached;
 #endif
-        public Process Process { get; set; }
         public HookBase HookBase;
         public Action InitializeAction;
 
@@ -25,11 +27,25 @@ namespace ElertanCheatBase.Payload
             _interface.Ping();
         }
 
+        public Process Process { get; set; }
+
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
 #if DEBUG
             // Instant launch debugger on debug build (does cause crash when csgo is not already running)
             Debugger.Launch();
+
+            // Create console for testing
+            WinApi.AllocConsole();
+            var stdHandle = WinApi.GetStdHandle(WinApi.STD_OUTPUT_HANDLE);
+            var safeFileHandle = new SafeFileHandle(stdHandle, true);
+            var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
+            var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
+            var standardOutput = new StreamWriter(fileStream, encoding);
+            standardOutput.AutoFlush = true;
+            Console.SetOut(standardOutput);
+
+            Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
 #endif
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             if (HookBase == null) throw new Exception("HookBase must be set");
@@ -56,6 +72,9 @@ namespace ElertanCheatBase.Payload
             {
             }
 
+#if DEBUG
+            WinApi.FreeConsole();
+#endif
             Core.Uninstall();
 
             // Finalise cleanup of hooks

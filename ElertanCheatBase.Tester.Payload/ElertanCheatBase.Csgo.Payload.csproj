@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chams\CounterTerroristCham.cs" />
+    <Compile Include="Chams\TerroristCham.cs" />
     <Compile Include="HookBase.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Models\CsLocalPlayer.cs" />
@@ -69,6 +71,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Chams\Info.txt" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
