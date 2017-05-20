@@ -19,25 +19,13 @@ namespace ElertanCheatBase.Tester.Payload
 
         private void Initialize()
         {
-            //var clientModuleAddress = IntPtr.Zero;
-            //var size = 0;
-            //foreach (ProcessModule module in Process.Modules)
-            //    switch (module.ModuleName)
-            //    {
-            //        case "engine.dll":
-
-            //            break;
-            //        case "client.dll":
-            //            clientModuleAddress = module.BaseAddress;
-            //            size = module.ModuleMemorySize;
-            //            break;
-            //    }
-            //var scanner = new Memory.SignatureScanner
-            //{
-            //    Address = clientModuleAddress,
-            //    Size = size
-            //};
-            //var address = scanner.Scan("A3 ? ? ? ? C7 05 ? ? ? ? ? ? ? ? E8 ? ? ? ? 59 C3 6A");
+            var scanner = new Memory.SignatureScanner
+            {
+                Address = ModuleInfos["client.dll"].Address,
+                ScanSize = ModuleInfos["client.dll"].MemorySize
+            };
+            var address = scanner.Scan("A3 ? ? ? ? C7 05 ? ? ? ? ? ? ? ? E8 ? ? ? ? 59 C3 6A") + 0x1;
+            address = Memory.ReadIntPtr(address, 0x2C);
         }
     }
 }
