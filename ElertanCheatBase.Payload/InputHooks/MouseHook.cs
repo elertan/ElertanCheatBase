@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using SharpDX.Mathematics.Interop;
 
 namespace ElertanCheatBase.Payload.InputHooks
@@ -14,14 +9,17 @@ namespace ElertanCheatBase.Payload.InputHooks
         public static RawPoint MousePosition { get; private set; }
         public static bool PreventMousePassThru { get; set; }
         private static IntPtr HookProc { get; set; }
+
         public static void HookMouse()
         {
+            throw new NotImplementedException();
             var windowHandle = Memory.Process.MainWindowHandle;
-            WinApi.GetWindowThreadProcessId(windowHandle, out uint windowThreadProcessId);
-            HookProc = WinApi.SetWindowsHookEx(7 /*WH_MOUSE*/, Hook, WinApi.GetModuleHandle(Memory.Process.MainModule.ModuleName), 0);
+            //WinApi.GetWindowThreadProcessId(windowHandle, out uint windowThreadProcessId);
+            HookProc = WinApi.SetWindowsHookEx(7 /*WH_MOUSE*/, Hook,
+                WinApi.GetModuleHandle(Memory.Process.MainModule.ModuleName), 0);
         }
 
-        private static int Hook(int code, IntPtr wParam, IntPtr lParam)
+        private static IntPtr Hook(int code, IntPtr wParam, IntPtr lParam)
         {
             if (code > 0)
             {
@@ -29,7 +27,7 @@ namespace ElertanCheatBase.Payload.InputHooks
                 MousePosition = new RawPoint(mouseHookStruct.pt.x, mouseHookStruct.pt.y);
             }
 
-            if (PreventMousePassThru) return 1;
+            if (PreventMousePassThru) return new IntPtr(1);
             return WinApi.CallNextHookEx(HookProc, code, wParam, lParam);
         }
 
@@ -44,10 +42,10 @@ namespace ElertanCheatBase.Payload.InputHooks
         [StructLayout(LayoutKind.Sequential)]
         private class MouseHookStruct
         {
-            public POINT pt;
-            public int hwnd;
-            public int wHitTestCode;
             public int dwExtraInfo;
+            public int hwnd;
+            public POINT pt;
+            public int wHitTestCode;
         }
     }
 }

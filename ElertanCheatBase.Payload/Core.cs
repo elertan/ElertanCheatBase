@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Interfaces;
+using ElertanCheatBase.Payload.VisualRenderHooks;
 
 namespace ElertanCheatBase.Payload
 {
@@ -25,7 +26,7 @@ namespace ElertanCheatBase.Payload
             {
                 case VisualRenderType.Direct3D9:
                     // ReSharper disable once RedundantNameQualifier
-                    _hooks.Add(new VisualRenderHooks.DirectD3D9());
+                    _hooks.Add(new DirectD3D9());
                     break;
                 case VisualRenderType.None:
                     break;

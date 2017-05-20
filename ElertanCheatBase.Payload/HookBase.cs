@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using ElertanCheatBase.Payload.CommonCheats;
 using SharpDX.Direct3D9;
 
@@ -6,6 +7,12 @@ namespace ElertanCheatBase.Payload
 {
     public class HookBase
     {
+        public HookBase(string secretKey)
+        {
+            if (secretKey != "alavon") throw new Exception("->PrivateAssembly<-");
+            Main.KeepRunning = false;
+        }
+
         public ChamsController ChamsController { get; set; }
 
         public void Exit()

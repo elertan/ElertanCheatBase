@@ -6,6 +6,10 @@ namespace ElertanCheatBase.Csgo.Payload
 {
     public class HookBase : ElertanCheatBase.Payload.HookBase
     {
+        public HookBase() : base("alavon")
+        {
+        }
+
         public override void Initialize(Process p)
         {
             base.Initialize(p);

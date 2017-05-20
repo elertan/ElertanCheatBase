@@ -11,6 +11,7 @@ namespace ElertanCheatBase.Payload
     public class Main : IEntryPoint
     {
         public static bool KeepRunning = true;
+        private static Thread _consoleThread;
 #if DEBUG
         private bool _debuggerHadBeenAttached;
 #endif
@@ -35,16 +36,7 @@ namespace ElertanCheatBase.Payload
             Debugger.Launch();
 
             // Create console for testing
-            WinApi.AllocConsole();
-            var stdHandle = WinApi.GetStdHandle(WinApi.STD_OUTPUT_HANDLE);
-            var safeFileHandle = new SafeFileHandle(stdHandle, true);
-            var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
-            var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
-            var standardOutput = new StreamWriter(fileStream, encoding);
-            standardOutput.AutoFlush = true;
-            Console.SetOut(standardOutput);
-
-            Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
+            CreateConsole();
 #endif
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             if (HookBase == null) throw new Exception("HookBase must be set");
@@ -67,10 +59,12 @@ namespace ElertanCheatBase.Payload
                     Thread.Sleep(500);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                // ignored
             }
 
+            _consoleThread.Abort();
 #if DEBUG
             WinApi.FreeConsole();
 #endif
@@ -78,6 +72,26 @@ namespace ElertanCheatBase.Payload
 
             // Finalise cleanup of hooks
             LocalHook.Release();
+        }
+
+        private static void CreateConsole()
+        {
+            _consoleThread = new Thread(() =>
+            {
+                WinApi.AllocConsole();
+                var stdHandle = WinApi.GetStdHandle(WinApi.STD_OUTPUT_HANDLE);
+                var safeFileHandle = new SafeFileHandle(stdHandle, true);
+                var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
+                var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
+                var standardOutput = new StreamWriter(fileStream, encoding);
+                standardOutput.AutoFlush = true;
+                Console.SetOut(standardOutput);
+
+                Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
+                while (true)
+                    Console.Read();
+            });
+            _consoleThread.Start();
         }
     }
 }

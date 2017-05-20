@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ElertanCheatBase.Payload.Interfaces;
 
@@ -7,12 +8,12 @@ namespace ElertanCheatBase.Payload.InputHooks
 {
     public class KeyboardHook : IHook
     {
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_SYSKEYDOWN = 0x0104;
-        private readonly Process _p;
+        private const int GWL_WNDPROC = -4;
 
-        private IntPtr _hookId;
+        private const int WM_KEYDOWN = 0x100;
+        private readonly Process _p;
+        private WinApi.WndProcDelegate _originalWinProc;
+        private IntPtr _originalWinProcPtr;
 
         public KeyboardHook(Process p)
         {
@@ -21,29 +22,32 @@ namespace ElertanCheatBase.Payload.InputHooks
 
         public void Install(HookBase hookBase)
         {
-            using (var module = _p.MainModule)
-            {
-                //var hInstance = WinApi.LoadLibrary("User32");
-                var moduleHandle = WinApi.GetModuleHandle(module.ModuleName);
-                _hookId = WinApi.SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, moduleHandle, 0);
-                if (_hookId == IntPtr.Zero) throw new Exception("Failed to hook keyboard events");
-            }
+            var functionPtr = Marshal.GetFunctionPointerForDelegate(new WinApi.WndProcDelegate(WinProc));
+            //WinApi.SetLastError(0);
+            _originalWinProcPtr = WinApi.GetWindowLongPtr(_p.MainWindowHandle, GWL_WNDPROC);
+            //var error = new Win32Exception(Marshal.GetLastWin32Error()).Message;
+            WinApi.SetWindowLongPtr(new HandleRef(this, _p.MainWindowHandle), GWL_WNDPROC,
+                functionPtr);
+            //_originalWinProc = Marshal.GetDelegateForFunctionPointer<WinApi.WndProcDelegate>(_originalWinProcPtr);
         }
 
         public void Uninstall()
         {
-            WinApi.UnhookWindowsHookEx(_hookId);
+            WinApi.SetWindowLongPtr(new HandleRef(this, _p.MainWindowHandle), GWL_WNDPROC, _originalWinProcPtr);
         }
 
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        private IntPtr WinProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
-                Console.WriteLine((Keys) wParam.ToInt32());
+            if (wParam == (IntPtr) WM_KEYDOWN)
+            {
+                var vkCode = Marshal.ReadInt32(lParam);
 
+                Console.WriteLine("Key: " + (Keys) vkCode);
+            }
             // Blocking call
             // return new IntPtr(1);
 
-            return WinApi.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            return WinApi.CallWindowProc(_originalWinProc, hWnd, uMsg, wParam, lParam);
         }
     }
 }
