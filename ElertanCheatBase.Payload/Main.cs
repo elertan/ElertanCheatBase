@@ -36,6 +36,9 @@ namespace ElertanCheatBase.Payload
             @interface.Ping();
         }
 
+        public static Process Process { get; set; }
+        public static Dictionary<string, ModuleInfo> ModuleInfos { get; } = new Dictionary<string, ModuleInfo>();
+
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
 #if DEBUG

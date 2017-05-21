@@ -4,10 +4,14 @@ using ElertanCheatBase.Payload;
 
 namespace ElertanCheatBase.Csgo.Payload.Models
 {
-    class CsLocalPlayer
+    internal class CsLocalPlayer
     {
-        public static int Health => Memory.ValueResolver.Resolve<int>(nameof(Health));
-        public static CsTeam Team => Memory.ValueResolver.Resolve<CsTeam>(nameof(Team));
+        public enum CsTeam
+        {
+            Spectator = 1,
+            Terrorist = 2,
+            CounterTerrorist = 3
+        }
 
         static CsLocalPlayer()
         {
@@ -32,15 +36,11 @@ namespace ElertanCheatBase.Csgo.Payload.Models
             Memory.ValueResolver.Register(nameof(Team), () =>
             {
                 var address = Memory.AddressResolver.Resolve(nameof(CsLocalPlayer));
-                return (CsTeam)Memory.ReadInt32(address, 0xF0);
+                return (CsTeam) Memory.ReadInt32(address, 0xF0);
             });
         }
 
-        public enum CsTeam
-        {
-            Spectator = 1,
-            Terrorist = 2,
-            CounterTerrorist = 3
-        }
+        public static int Health => Memory.ValueResolver.Resolve<int>(nameof(Health));
+        public static CsTeam Team => Memory.ValueResolver.Resolve<CsTeam>(nameof(Team));
     }
 }

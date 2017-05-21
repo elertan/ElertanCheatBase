@@ -17,14 +17,13 @@ namespace ElertanCheatBase.Payload
             Process = p;
             Modules = new ProcessModule[p.Modules.Count];
             for (var i = 0; i < p.Modules.Count; i++)
-            {
                 Modules[i] = p.Modules[i];
-            }
         }
 
         public static byte ReadByte(IntPtr address, int offset = 0) => Marshal.ReadByte(address, offset);
         public static IntPtr ReadIntPtr(IntPtr address, int offset = 0) => Marshal.ReadIntPtr(address, offset);
         public static byte ReadByte(IntPtr address) => Marshal.ReadByte(address);
+
         public static byte[] ReadBytes(IntPtr address, int amountOfBytes)
         {
             var buffer = new byte[amountOfBytes];
@@ -32,6 +31,7 @@ namespace ElertanCheatBase.Payload
                 buffer[i] = ReadByte(IntPtr.Add(address, i));
             return buffer;
         }
+
         public static byte[] ReadBytes(IntPtr address, int objectSize, params int[] offsets)
         {
             address = offsets.Aggregate(address, ReadIntPtr);
@@ -71,7 +71,6 @@ namespace ElertanCheatBase.Payload
             /// <returns></returns>
             public IntPtr Scan(string strPattern, int patternOffset = 0)
             {
-                
                 var pattern = strPattern.Split(' ').Select(str =>
                 {
                     var nullableConverter = new NullableConverter(typeof(byte?));
@@ -121,19 +120,22 @@ namespace ElertanCheatBase.Payload
                 // Invalid arguments
                 if (Size == 0) throw new Exception("Dumpsize can't be 0");
                 if (Address == IntPtr.Zero) throw new Exception("Address cant be 0x0");
-                
+
                 return ReadBytes(Address, Size);
             }
         }
 
         public static class AddressResolver
         {
-            private static readonly Dictionary<string, Func<IntPtr>> ResolvingFunctions = new Dictionary<string, Func<IntPtr>>();
+            private static readonly Dictionary<string, Func<IntPtr>> ResolvingFunctions =
+                new Dictionary<string, Func<IntPtr>>();
+
             private static readonly Dictionary<string, IntPtr> ResolvedAddresses = new Dictionary<string, IntPtr>();
 
             public static void Register(string key, Func<IntPtr> resolvingFunc)
             {
-                if (ResolvingFunctions.ContainsKey(key)) throw new Exception($"Can't register more than 1 resolving method per key ({key})");
+                if (ResolvingFunctions.ContainsKey(key))
+                    throw new Exception($"Can't register more than 1 resolving method per key ({key})");
 
                 ResolvingFunctions.Add(key, resolvingFunc);
             }
@@ -142,7 +144,8 @@ namespace ElertanCheatBase.Payload
             {
                 if (resolveOnce && ResolvedAddresses.ContainsKey(key)) return ResolvedAddresses[key];
 
-                if (!ResolvingFunctions.ContainsKey(key)) throw new Exception($"There is no existing registered resolve for the key: {key}");
+                if (!ResolvingFunctions.ContainsKey(key))
+                    throw new Exception($"There is no existing registered resolve for the key: {key}");
                 var pointer = ResolvingFunctions[key].Invoke();
 
                 if (resolveOnce) ResolvedAddresses.Add(key, pointer);
@@ -153,26 +156,30 @@ namespace ElertanCheatBase.Payload
 
         public static class ValueResolver
         {
-            private static readonly Dictionary<string, Func<object>> ResolvingFunctions = new Dictionary<string, Func<object>>();
+            private static readonly Dictionary<string, Func<object>> ResolvingFunctions =
+                new Dictionary<string, Func<object>>();
+
             private static readonly Dictionary<string, object> ResolvedObjects = new Dictionary<string, object>();
 
             public static void Register(string key, Func<object> resolvingFunc)
             {
-                if (ResolvingFunctions.ContainsKey(key)) throw new Exception($"Can't register more than 1 resolving method per key ({key})");
+                if (ResolvingFunctions.ContainsKey(key))
+                    throw new Exception($"Can't register more than 1 resolving method per key ({key})");
 
                 ResolvingFunctions.Add(key, resolvingFunc);
             }
 
             public static T Resolve<T>(string key, bool resolveOnce = false)
             {
-                if (resolveOnce && ResolvedObjects.ContainsKey(key)) return (T)ResolvedObjects[key];
+                if (resolveOnce && ResolvedObjects.ContainsKey(key)) return (T) ResolvedObjects[key];
 
-                if (!ResolvingFunctions.ContainsKey(key)) throw new Exception($"There is no existing registered resolve for the key: {key}");
+                if (!ResolvingFunctions.ContainsKey(key))
+                    throw new Exception($"There is no existing registered resolve for the key: {key}");
                 var value = ResolvingFunctions[key].Invoke();
 
                 if (resolveOnce) ResolvedObjects.Add(key, value);
 
-                return (T)value;
+                return (T) value;
             }
         }
     }
