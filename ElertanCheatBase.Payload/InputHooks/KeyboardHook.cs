@@ -8,46 +8,51 @@ namespace ElertanCheatBase.Payload.InputHooks
 {
     public class KeyboardHook : IHook
     {
+        // from winuser.h:
         private const int GWL_WNDPROC = -4;
+        private const int WM_LBUTTONDOWN = 0x0201;
 
         private const int WM_KEYDOWN = 0x100;
-        private readonly Process _p;
-        private WinApi.WndProcDelegate _originalWinProc;
-        private IntPtr _originalWinProcPtr;
 
-        public KeyboardHook(Process p)
-        {
-            _p = p;
-        }
+        // program variables
+        private IntPtr oldWndProc = IntPtr.Zero;
+        private Win32WndProc newWndProc = null;
+
+        [DllImport("user32")]
+        private static extern IntPtr SetWindowLong(IntPtr hWnd, int nIndex, Win32WndProc newProc);
+        [DllImport("user32")]
+        private static extern int CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        // A delegate that matches Win32 WNDPROC:
+        private delegate int Win32WndProc(IntPtr hWnd, int Msg, int wParam, int lParam);
+
 
         public void Install(HookBase hookBase)
         {
-            var functionPtr = Marshal.GetFunctionPointerForDelegate(new WinApi.WndProcDelegate(WinProc));
-            //WinApi.SetLastError(0);
-            _originalWinProcPtr = WinApi.GetWindowLongPtr(_p.MainWindowHandle, GWL_WNDPROC);
-            //var error = new Win32Exception(Marshal.GetLastWin32Error()).Message;
-            WinApi.SetWindowLongPtr(new HandleRef(this, _p.MainWindowHandle), GWL_WNDPROC,
-                functionPtr);
-            //_originalWinProc = Marshal.GetDelegateForFunctionPointer<WinApi.WndProcDelegate>(_originalWinProcPtr);
+            // hWnd is the window you want to subclass..., create a new 
+            // delegate for the new wndproc
+            newWndProc = WinProc;
+            // subclass
+            oldWndProc = SetWindowLong(Main.Process.MainWindowHandle, GWL_WNDPROC, newWndProc);
         }
 
         public void Uninstall()
         {
-            WinApi.SetWindowLongPtr(new HandleRef(this, _p.MainWindowHandle), GWL_WNDPROC, _originalWinProcPtr);
+            //WinApi.SetWindowLongPtr(new HandleRef(this, _p.MainWindowHandle), GWL_WNDPROC, _originalWinProcPtr);
         }
 
-        private IntPtr WinProc(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
+        private int WinProc(IntPtr hWnd, int Msg, int wParam, int lParam)
         {
-            if (wParam == (IntPtr) WM_KEYDOWN)
+            if (wParam == WM_KEYDOWN)
             {
-                var vkCode = Marshal.ReadInt32(lParam);
+                var vkCode = Marshal.ReadInt32(new IntPtr(lParam));
 
                 Console.WriteLine("Key: " + (Keys) vkCode);
             }
             // Blocking call
             // return new IntPtr(1);
 
-            return WinApi.CallWindowProc(_originalWinProc, hWnd, uMsg, wParam, lParam);
+            return CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
         }
     }
 }

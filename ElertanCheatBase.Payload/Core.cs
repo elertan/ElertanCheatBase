@@ -35,7 +35,7 @@ namespace ElertanCheatBase.Payload
             }
 
             // Input Hooks
-            _hooks.Add(new KeyboardHook(p));
+            _hooks.Add(new KeyboardHook());
 
             foreach (var hook in _hooks)
                 hook.Install(HookBase);

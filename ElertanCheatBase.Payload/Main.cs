@@ -12,8 +12,10 @@ namespace ElertanCheatBase.Payload
     public class Main : IEntryPoint
     {
         public static bool KeepRunning = true;
-        private static Thread _consoleThread;
+        public static Process Process { get; set; }
+        public static Dictionary<string, ModuleInfo> ModuleInfos { get; } = new Dictionary<string, ModuleInfo>();
 #if DEBUG
+        private static Thread _consoleThread;
         private bool _debuggerHadBeenAttached;
 #endif
         public HookBase HookBase;
@@ -26,18 +28,13 @@ namespace ElertanCheatBase.Payload
 
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             foreach (ProcessModule processModule in Process.Modules)
-                ModuleInfos.Add(processModule.ModuleName,
-                    new ModuleInfo
-                    {
-                        Name = processModule.ModuleName,
-                        MemorySize = processModule.ModuleMemorySize,
-                        Address = processModule.BaseAddress
-                    });
+            {
+                ModuleInfos.Add(processModule.ModuleName, new ModuleInfo { Name = processModule.ModuleName, MemorySize = processModule.ModuleMemorySize, Address = processModule.BaseAddress });
+            }
+
+            // If Ping fails then the Run method will be not be called
             @interface.Ping();
         }
-
-        public static Process Process { get; set; }
-        public static Dictionary<string, ModuleInfo> ModuleInfos { get; } = new Dictionary<string, ModuleInfo>();
 
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
@@ -74,11 +71,14 @@ namespace ElertanCheatBase.Payload
                 // ignored
             }
 
+#if DEBUG
             _consoleThread.Abort();
+#endif
+            Core.Uninstall();
+
 #if DEBUG
             WinApi.FreeConsole();
 #endif
-            Core.Uninstall();
 
             // Finalise cleanup of hooks
             LocalHook.Release();
@@ -86,6 +86,7 @@ namespace ElertanCheatBase.Payload
 
         private static void CreateConsole()
         {
+#if DEBUG
             _consoleThread = new Thread(() =>
             {
                 WinApi.AllocConsole();
@@ -93,8 +94,7 @@ namespace ElertanCheatBase.Payload
                 var safeFileHandle = new SafeFileHandle(stdHandle, true);
                 var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
                 var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
-                var standardOutput = new StreamWriter(fileStream, encoding);
-                standardOutput.AutoFlush = true;
+                var standardOutput = new StreamWriter(fileStream, encoding) {AutoFlush = true};
                 Console.SetOut(standardOutput);
 
                 Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
@@ -102,6 +102,7 @@ namespace ElertanCheatBase.Payload
                     Console.Read();
             });
             _consoleThread.Start();
+#endif
         }
     }
 }
