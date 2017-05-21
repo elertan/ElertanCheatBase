@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using EasyHook;
-using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Interfaces;
 using SharpDX;
 using SharpDX.Direct3D9;
@@ -57,11 +56,11 @@ namespace ElertanCheatBase.Payload.VisualRenderHooks
             var device = (Device) devicePtr;
             // Handle Endscene
             _hookBase.Direct3D9_EndScene(device);
-            device.EndScene();
-
             // VisualOverlay
             VisualOverlay.Draw(device);
-            device.DrawText($"X: {MouseHook.MousePosition.X} Y: {MouseHook.MousePosition.X}", 32, new RawPoint(50, 50), new RawColorBGRA(0,0,255,255));
+            device.DrawText($"MARK IS DIK", 32, new RawPoint(50, 50), new RawColorBGRA(0, 0, 255, 255));
+
+            device.EndScene();
 
             return Result.Ok.Code;
         }

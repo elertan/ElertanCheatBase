@@ -45,6 +45,16 @@ namespace ElertanCheatBase.Payload
         public static extern IntPtr CallWindowProc(WndProcDelegate lpPrevWndFunc, IntPtr hWnd, uint Msg, IntPtr wParam,
             IntPtr lParam);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr DispatchMessage([In] ref MSG lpmsg);
+
+        [DllImport("user32.dll")]
+        public static extern bool TranslateMessage([In] ref MSG lpMsg);
+
+        [DllImport("user32.dll")]
+        public static extern sbyte GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin,
+            uint wMsgFilterMax);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern void SetLastError(uint dwErrorCode);
 
@@ -80,5 +90,22 @@ namespace ElertanCheatBase.Payload
         [DllImport("kernel32.dll", EntryPoint = "FreeConsole", SetLastError = true, CharSet = CharSet.Auto,
             CallingConvention = CallingConvention.StdCall)]
         public static extern int FreeConsole();
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    public struct MSG
+    {
+        public IntPtr hwnd;
+        public uint message;
+        public UIntPtr wParam;
+        public UIntPtr lParam;
+        public uint time;
+        public POINT pt;
+    }
+
+    public struct POINT
+    {
+        public int x;
+        public int Y;
     }
 }
