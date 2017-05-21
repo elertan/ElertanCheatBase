@@ -13,10 +13,9 @@ namespace ElertanCheatBase.Payload
     {
         public static bool KeepRunning = true;
         public static Process Process { get; set; }
-        public static Dictionary<string, ModuleInfo> ModuleInfos { get; private set; } = new Dictionary<string, ModuleInfo>();
-        private readonly InjectorInterface _interface;
-        private static Thread _consoleThread;
+        public static Dictionary<string, ModuleInfo> ModuleInfos { get; } = new Dictionary<string, ModuleInfo>();
 #if DEBUG
+        private static Thread _consoleThread;
         private bool _debuggerHadBeenAttached;
 #endif
         public HookBase HookBase;
@@ -27,15 +26,13 @@ namespace ElertanCheatBase.Payload
             // Connect to server object using provided channel name
             var @interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
 
-            // If Ping fails then the Run method will be not be called
-            _interface.Ping();
-
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             foreach (ProcessModule processModule in Process.Modules)
             {
                 ModuleInfos.Add(processModule.ModuleName, new ModuleInfo { Name = processModule.ModuleName, MemorySize = processModule.ModuleMemorySize, Address = processModule.BaseAddress });
             }
-        }
+
+            // If Ping fails then the Run method will be not be called
             @interface.Ping();
         }
 
@@ -74,11 +71,14 @@ namespace ElertanCheatBase.Payload
                 // ignored
             }
 
+#if DEBUG
             _consoleThread.Abort();
+#endif
+            Core.Uninstall();
+
 #if DEBUG
             WinApi.FreeConsole();
 #endif
-            Core.Uninstall();
 
             // Finalise cleanup of hooks
             LocalHook.Release();
@@ -86,6 +86,7 @@ namespace ElertanCheatBase.Payload
 
         private static void CreateConsole()
         {
+#if DEBUG
             _consoleThread = new Thread(() =>
             {
                 WinApi.AllocConsole();
@@ -93,8 +94,7 @@ namespace ElertanCheatBase.Payload
                 var safeFileHandle = new SafeFileHandle(stdHandle, true);
                 var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
                 var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
-                var standardOutput = new StreamWriter(fileStream, encoding);
-                standardOutput.AutoFlush = true;
+                var standardOutput = new StreamWriter(fileStream, encoding) {AutoFlush = true};
                 Console.SetOut(standardOutput);
 
                 Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
@@ -102,6 +102,7 @@ namespace ElertanCheatBase.Payload
                     Console.Read();
             });
             _consoleThread.Start();
+#endif
         }
     }
 }

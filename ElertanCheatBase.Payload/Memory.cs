@@ -87,7 +87,7 @@ namespace ElertanCheatBase.Payload
                     }
                 }).ToArray();
 
-                for (var i = 0; i < Size; i++)
+                for (var i = 0; i < ScanSize; i++)
                 {
                     var patternMatch = true;
                     for (var x = 0; x < pattern.Length; x++)

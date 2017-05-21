@@ -15,7 +15,7 @@ namespace ElertanCheatBase.Csgo.Payload.Models
             var scanner = new Memory.SignatureScanner
             {
                 Address = clientModule.BaseAddress,
-                Size = clientModule.ModuleMemorySize
+                ScanSize = clientModule.ModuleMemorySize
             };
 
             Memory.AddressResolver.Register(nameof(CsLocalPlayer), () =>
