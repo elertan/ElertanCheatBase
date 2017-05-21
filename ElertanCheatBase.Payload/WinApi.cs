@@ -27,8 +27,8 @@ namespace ElertanCheatBase.Payload
         // to the correct function (GetWindowLong in 32-bit mode and GetWindowLongPtr in 64-bit mode)
         public static IntPtr SetWindowLongPtr(HandleRef hWnd, int nIndex, IntPtr dwNewLong)
         {
-            //if (IntPtr.Size == 8)
-            //   return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
+            if (IntPtr.Size == 8)
+                return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
             return new IntPtr(SetWindowLong32(hWnd, nIndex, dwNewLong.ToInt32()));
         }
 
