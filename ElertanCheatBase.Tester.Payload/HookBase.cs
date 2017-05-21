@@ -35,8 +35,8 @@ namespace ElertanCheatBase.Csgo.Payload
             ChamsController.CreateTexture("blue", blueColor);
             ChamsController.CreateTexture("red", redColor);
 
-            ChamsController.Chams.Add(new TerroristCham {Enabled = false});
-            ChamsController.Chams.Add(new CounterTerroristCham {Enabled = false});
+            ChamsController.Chams.Add(new TerroristCham {Enabled = true});
+            ChamsController.Chams.Add(new CounterTerroristCham {Enabled = true});
         }
 
         public override void Direct3D9_EndScene(Device device)

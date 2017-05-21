@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ElertanCheatBase.Payload.Interfaces;
 
@@ -10,40 +10,47 @@ namespace ElertanCheatBase.Payload.InputHooks
         private const int WH_KEYBOARD_LL = 13;
         private const int WM_KEYDOWN = 0x0100;
         private const int WM_SYSKEYDOWN = 0x0104;
-        private readonly Process _p;
 
-        private IntPtr _hookId;
-
-        public KeyboardHook(Process p)
-        {
-            _p = p;
-        }
+        private int _hookId;
 
         public void Install(HookBase hookBase)
         {
-            using (var module = _p.MainModule)
-            {
-                //var hInstance = WinApi.LoadLibrary("User32");
-                var moduleHandle = WinApi.GetModuleHandle(module.ModuleName);
-                _hookId = WinApi.SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, moduleHandle, 0);
-                if (_hookId == IntPtr.Zero) throw new Exception("Failed to hook keyboard events");
-            }
+            //var myThreadId = RemoteHooking.GetCurrentThreadId();
+            //var processThreadId = Main.Process.Threads[0].Id;
+            //var mName = Path.GetFileNameWithoutExtension(Main.Process.MainModule.ModuleName);
+            //_hookId = SetWindowsHookEx(13, HookCallback, WinApi.GetModuleHandle(mName), processThreadId);
+
+            _hookId = SetWindowsHookEx(13, HookCallback, (IntPtr) 0, 0);
         }
 
         public void Uninstall()
         {
-            WinApi.UnhookWindowsHookEx(_hookId);
+            WinApi.UnhookWindowsHookEx((IntPtr) _hookId);
         }
 
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+
+        [DllImport("user32.dll")]
+        private static extern int SetWindowsHookEx(int idHook, HookProc func, IntPtr mod, int threadId);
+
+        [DllImport("user32.dll")]
+        private static extern int CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+        private int HookCallback(int code, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
-                Console.WriteLine((Keys) wParam.ToInt32());
+            if (code >= 0 && wParam.ToInt32() == WM_KEYDOWN)
+            {
+                var vkCode = Marshal.ReadInt32(lParam);
+                var key = (Keys) vkCode;
+                Console.WriteLine("Key: " + key);
+            }
 
             // Blocking call
-            // return new IntPtr(1);
+            //return 1;
 
-            return WinApi.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            var ptr = new IntPtr(_hookId);
+            return (int) WinApi.CallNextHookEx(ptr, code, wParam, lParam);
         }
+
+        private delegate int HookProc(int code, IntPtr wParam, IntPtr lParam);
     }
 }

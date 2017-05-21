@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using EasyHook;
@@ -27,7 +28,17 @@ namespace ElertanCheatBase.Payload
             _interface.Ping();
         }
 
-        public Process Process { get; set; }
+        public static Process Process { get; set; }
+
+        [DllImport("user32.dll")]
+        private static extern int PeekMessage(ref Message msg, IntPtr handle, uint Something, uint whoCares,
+            uint whocares2);
+
+        [DllImport("user32.dll")]
+        private static extern int TranslateMessage(ref Message msg);
+
+        [DllImport("user32.dll")]
+        private static extern int DispatchMessage(ref Message msg);
 
         public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
@@ -58,6 +69,7 @@ namespace ElertanCheatBase.Payload
 
             try
             {
+                var msg = new Message();
                 while (KeepRunning)
                 {
                     // When debugging, exit the dll when the debugging had stopped, this is not applicable for a release build
@@ -65,7 +77,12 @@ namespace ElertanCheatBase.Payload
                     if (!Debugger.IsAttached && _debuggerHadBeenAttached) KeepRunning = false;
                     if (Debugger.IsAttached && !_debuggerHadBeenAttached) _debuggerHadBeenAttached = true;
 #endif
-                    Thread.Sleep(500);
+                    if (PeekMessage(ref msg, (IntPtr) 0, 0, 0, 0) != 0)
+                    {
+                        TranslateMessage(ref msg);
+                        DispatchMessage(ref msg);
+                    }
+                    Thread.Sleep(2);
                 }
             }
             catch
@@ -80,5 +97,10 @@ namespace ElertanCheatBase.Payload
             // Finalise cleanup of hooks
             LocalHook.Release();
         }
+    }
+
+    public class Message
+    {
+        public int message { get; set; }
     }
 }
