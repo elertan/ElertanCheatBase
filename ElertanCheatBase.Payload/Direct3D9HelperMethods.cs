@@ -26,7 +26,7 @@ namespace ElertanCheatBase.Payload
                 var font = new Font(device,
                     new FontDescription
                     {
-                        FaceName = "Arial",
+                        FaceName = "Verdana",
                         OutputPrecision = FontPrecision.TrueTypeOnly,
                         Quality = FontQuality.Antialiased,
                         Height = fontSize

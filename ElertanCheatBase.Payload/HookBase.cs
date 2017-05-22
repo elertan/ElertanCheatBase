@@ -51,8 +51,15 @@ namespace ElertanCheatBase.Payload
             if (Core.VisualRenderType == VisualRenderType.Direct3D9 && ev.Key == Direct3D9Overlay.ToggleKey)
             {
                 Direct3D9Overlay.Enabled = !Direct3D9Overlay.Enabled;
-                ev.KeyboardHook.BlockInput = Direct3D9Overlay.Enabled;
+                Main.KeyboardHook.BlockInput = Direct3D9Overlay.Enabled;
+                Main.MouseHook.BlockInput = Direct3D9Overlay.Enabled;
             }
+        }
+
+        public void HandleMouseChanges(MouseHookEventArgs ev)
+        {
+            if (Core.VisualRenderType == VisualRenderType.Direct3D9 && Direct3D9Overlay.Enabled)
+                Direct3D9Overlay.HandleMouseInput(ev);
         }
     }
 }

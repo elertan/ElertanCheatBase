@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Reflection;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Interfaces;
@@ -37,10 +38,31 @@ namespace ElertanCheatBase.Payload
             // Input Hooks
             var keyboardHook = new KeyboardHook();
             keyboardHook.KeyDownOccured += KeyboardHook_KeyDownOccured;
+            var mouseHook = new MouseHook();
+            mouseHook.MouseChangesOccured += MouseHook_MouseChangesOccured;
             _hooks.Add(keyboardHook);
+            _hooks.Add(mouseHook);
+
+            Main.KeyboardHook = keyboardHook;
+            Main.MouseHook = mouseHook;
 
             foreach (var hook in _hooks)
                 hook.Install(HookBase);
+        }
+
+        private static void MouseHook_MouseChangesOccured(object sender, MouseHookEventArgs e)
+        {
+            WinApi.RECT windowRect;
+            WinApi.GetWindowRect(Main.Process.MainWindowHandle, out windowRect);
+
+            // Dont handle messages outside our window frame
+            if (e.MouseInfo.Point.X < windowRect.Left ||
+                e.MouseInfo.Point.X > windowRect.Right ||
+                e.MouseInfo.Point.Y < windowRect.Top ||
+                e.MouseInfo.Point.Y > windowRect.Bottom) return;
+
+            e.MouseInfo.Point = new Point(e.MouseInfo.Point.X - windowRect.Left, e.MouseInfo.Point.Y - windowRect.Top);
+            HookBase.HandleMouseChanges(e);
         }
 
         private static void KeyboardHook_KeyDownOccured(object sender, KeyboardHookKeyDown e)

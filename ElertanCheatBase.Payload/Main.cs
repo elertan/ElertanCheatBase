@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using EasyHook;
+using ElertanCheatBase.Payload.InputHooks;
 
 namespace ElertanCheatBase.Payload
 {
@@ -26,6 +27,8 @@ namespace ElertanCheatBase.Payload
         }
 
         public static Process Process { get; set; }
+        public static MouseHook MouseHook { get; set; }
+        public static KeyboardHook KeyboardHook { get; set; }
 
         [DllImport("user32.dll")]
         private static extern int PeekMessage(ref Message msg, IntPtr handle, uint Something, uint whoCares,
