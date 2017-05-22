@@ -35,10 +35,17 @@ namespace ElertanCheatBase.Payload
             }
 
             // Input Hooks
-            _hooks.Add(new KeyboardHook());
+            var keyboardHook = new KeyboardHook();
+            keyboardHook.KeyDownOccured += KeyboardHook_KeyDownOccured;
+            _hooks.Add(keyboardHook);
 
             foreach (var hook in _hooks)
                 hook.Install(HookBase);
+        }
+
+        private static void KeyboardHook_KeyDownOccured(object sender, KeyboardHookKeyDown e)
+        {
+            HookBase.HandleKeyDown(e);
         }
 
         public static void Uninstall()

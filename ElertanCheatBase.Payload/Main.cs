@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using EasyHook;
-using Microsoft.Win32.SafeHandles;
 
 namespace ElertanCheatBase.Payload
 {
@@ -47,16 +44,16 @@ namespace ElertanCheatBase.Payload
             Debugger.Launch();
 
             // Create console for testing
-            WinApi.AllocConsole();
-            var stdHandle = WinApi.GetStdHandle(WinApi.STD_OUTPUT_HANDLE);
-            var safeFileHandle = new SafeFileHandle(stdHandle, true);
-            var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
-            var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
-            var standardOutput = new StreamWriter(fileStream, encoding);
-            standardOutput.AutoFlush = true;
-            Console.SetOut(standardOutput);
+            //WinApi.AllocConsole();
+            //var stdHandle = WinApi.GetStdHandle(WinApi.STD_OUTPUT_HANDLE);
+            //var safeFileHandle = new SafeFileHandle(stdHandle, true);
+            //var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
+            //var encoding = Encoding.GetEncoding(WinApi.MY_CODE_PAGE);
+            //var standardOutput = new StreamWriter(fileStream, encoding);
+            //standardOutput.AutoFlush = true;
+            //Console.SetOut(standardOutput);
 
-            Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
+            //Console.WriteLine("Debug Console Elertan Cheatbase\n-------------------------------");
 #endif
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             if (HookBase == null) throw new Exception("HookBase must be set");
@@ -90,7 +87,7 @@ namespace ElertanCheatBase.Payload
             }
 
 #if DEBUG
-            WinApi.FreeConsole();
+            //WinApi.FreeConsole();
 #endif
             Core.Uninstall();
 

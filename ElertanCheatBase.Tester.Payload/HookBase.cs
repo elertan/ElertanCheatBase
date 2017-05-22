@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using ElertanCheatBase.Csgo.Payload.Chams;
+using ElertanCheatBase.Payload.InputHooks;
 using SharpDX.Direct3D9;
 
 namespace ElertanCheatBase.Csgo.Payload
@@ -50,6 +51,11 @@ namespace ElertanCheatBase.Csgo.Payload
         {
             base.Direct3D9_DrawIndexedPrimitive(device, primitiveType, baseVertexIndex, minVertexIndex, numVertices,
                 startIndex, primCount);
+        }
+
+        public override void HandleKeyDown(KeyboardHookKeyDown ev)
+        {
+            base.HandleKeyDown(ev);
         }
     }
 }
