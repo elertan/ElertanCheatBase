@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using ElertanCheatBase.Payload.CommonCheats;
 using ElertanCheatBase.Payload.InputHooks;
+using ElertanCheatBase.Payload.Rendering;
 using ElertanCheatBase.Payload.VisualOverlay;
 using SharpDX.Direct3D9;
 
@@ -24,7 +26,9 @@ namespace ElertanCheatBase.Payload
         public virtual void Direct3D9_EndScene(Device device)
         {
             ChamsController.Direct3D9_EndScene(device);
-            Direct3D9Overlay.Draw(device);
+
+            var renderDevice = new D3D9RenderDevice(device);
+            Overlay.Draw(renderDevice);
         }
 
         public virtual void Direct3D9_DrawIndexedPrimitive(Device device,
@@ -48,18 +52,21 @@ namespace ElertanCheatBase.Payload
             if (ev.Key == Keys.Pause) Main.KeepRunning = false;
 #endif
 
-            if (Core.VisualRenderType == VisualRenderType.Direct3D9 && ev.Key == Direct3D9Overlay.ToggleKey)
+            if (ev.Key == Overlay.ToggleKey)
             {
-                Direct3D9Overlay.Enabled = !Direct3D9Overlay.Enabled;
-                Main.KeyboardHook.BlockInput = Direct3D9Overlay.Enabled;
-                Main.MouseHook.BlockInput = Direct3D9Overlay.Enabled;
+                Overlay.Enabled = !Overlay.Enabled;
+                Main.KeyboardHook.BlockInput = Overlay.Enabled;
+                Main.MouseHook.BlockInput = Overlay.Enabled;
             }
         }
 
         public void HandleMouseChanges(MouseHookEventArgs ev)
         {
-            if (Core.VisualRenderType == VisualRenderType.Direct3D9 && Direct3D9Overlay.Enabled)
-                Direct3D9Overlay.HandleMouseInput(ev);
+            ev.MouseInfo.Point = new Point(ev.MouseInfo.Point.X, ev.MouseInfo.Point.Y - 25);
+            if (Overlay.Enabled)
+                Overlay.HandleMouseInput(ev);
+            else
+                Overlay.ListenMouseInput(ev);
         }
     }
 }
