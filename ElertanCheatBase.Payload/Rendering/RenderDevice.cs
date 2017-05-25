@@ -3,19 +3,15 @@ using System.Drawing;
 
 namespace ElertanCheatBase.Payload.Rendering
 {
-    public abstract class RenderDevice
+    public abstract class RenderDevice : IRenderDevice
     {
         protected RenderDevice(Size viewport)
         {
             Viewport = viewport;
+            Area = new Rectangle(Point.Empty, Viewport);
         }
 
         public Size Viewport { get; set; }
-
-        public virtual PartialRenderDevice CreatePartialDevice(Rectangle area)
-        {
-            return new PartialRenderDevice(this, area);
-        }
 
         public virtual void DrawRectangle(Point position, Size size, Color color)
         {
@@ -25,6 +21,18 @@ namespace ElertanCheatBase.Payload.Rendering
         public virtual void DrawText(string text, int fontSize, Point position, Color color)
         {
             throw new NotImplementedException();
+        }
+
+        public Rectangle Area { get; set; }
+
+        public virtual void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual PartialRenderDevice CreatePartialDevice(Rectangle area)
+        {
+            return new PartialRenderDevice(this, area);
         }
     }
 }

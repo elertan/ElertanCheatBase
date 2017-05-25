@@ -54,6 +54,9 @@ namespace ElertanCheatBase.Payload
             CallingConvention = CallingConvention.StdCall)]
         public static extern int FreeConsole();
 
+        [DllImport("user32.dll")]
+        public static extern int ShowCursor(bool bShow);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {

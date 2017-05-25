@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Rendering;
 using ElertanCheatBase.Payload.VisualOverlay.Applications;
+using ElertanCheatBase.Payload.VisualOverlay.Applications.Terminal;
 using ElertanCheatBase.Payload.VisualOverlay.Interactables;
 
 namespace ElertanCheatBase.Payload.VisualOverlay
@@ -16,7 +17,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay
 
         static Overlay()
         {
-            var terminal = AppManager.StartApplication(typeof(Terminal));
+            var terminal = AppManager.StartApplication(typeof(App));
         }
 
         public static bool Enabled { get; set; }
@@ -62,20 +63,20 @@ namespace ElertanCheatBase.Payload.VisualOverlay
             DrawCursor(device);
         }
 
-        private static void DrawDock(RenderDevice device)
+        private static void DrawDock(IRenderDevice device)
         {
             var dockRenderDevice = new PartialRenderDevice(device,
                 new Rectangle(0, device.Viewport.Height - 40, device.Viewport.Width, device.Viewport.Height));
             Dock.Draw(dockRenderDevice);
         }
 
-        private static void DrawCursor(RenderDevice device)
+        private static void DrawCursor(IRenderDevice device)
         {
             device.DrawRectangle(new Point(MousePosition.X - 11, MousePosition.Y - 1), new Size(22, 2), Color.White);
             device.DrawRectangle(new Point(MousePosition.X - 1, MousePosition.Y - 11), new Size(2, 22), Color.White);
         }
 
-        private static void DrawMenuBar(RenderDevice device)
+        private static void DrawMenuBar(IRenderDevice device)
         {
             var menuBarRenderDevice = new PartialRenderDevice(device, new Rectangle(0, 0, device.Viewport.Width, 70));
 
@@ -96,7 +97,8 @@ namespace ElertanCheatBase.Payload.VisualOverlay
             var verticalChanges = PreMouseLockPoint.Y - ev.MouseInfo.Point.Y;
             MousePosition = new Point(MousePosition.X - horizontalChanges, MousePosition.Y - verticalChanges);
 
-            
+            var partialPos = new Point(MousePosition.X, MousePosition.Y - 70);
+            AppManager.HandleMouseInput(partialPos, ev.MouseMessage);
         }
 
         /// <summary>

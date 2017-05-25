@@ -57,6 +57,7 @@ namespace ElertanCheatBase.Payload
                 Overlay.Enabled = !Overlay.Enabled;
                 Main.KeyboardHook.BlockInput = Overlay.Enabled;
                 Main.MouseHook.BlockInput = Overlay.Enabled;
+                WinApi.ShowCursor(false);
             }
         }
 
