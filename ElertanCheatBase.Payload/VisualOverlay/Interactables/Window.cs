@@ -1,14 +1,17 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Linq;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Rendering;
+using ElertanCheatBase.Payload.VisualOverlay.EventArguments;
 
 namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 {
     public class Window : Control
     {
         private Control _activeControl;
+        private bool _hasLoaded;
         private bool _isMovingWindow;
         private Point _movingWindowOffsetPoint = Point.Empty;
 
@@ -28,6 +31,8 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
         //public bool Visible { get; set; } = true;
         public string Title { get; set; }
 
+        public WindowBorderStyle BorderStyle { get; set; } = WindowBorderStyle.FixedSingle;
+
         public int BarHeight { get; set; } = 30;
 
         public int ZIndex { get; set; }
@@ -43,6 +48,8 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
             }
         }
 
+        public event EventHandler<RenderDeviceEventArgs> Load;
+
         private void Controls_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             foreach (var control in e.NewItems.Cast<Control>())
@@ -53,11 +60,21 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 
         public override void Draw(IRenderDevice device)
         {
-            device.DrawRectangle(Point.Empty, Size, BackgroundColor);
-            var invertedBackgroundColor = Color.FromArgb(BackgroundColor.ToArgb() ^ 0xffffff);
-            device.DrawRectangle(Point.Empty, new Size(Size.Width, BarHeight), invertedBackgroundColor);
+            if (!_hasLoaded)
+            {
+                _hasLoaded = true;
+                OnLoad(new RenderDeviceEventArgs {RenderDevice = device});
+            }
 
-            device.DrawText(Title, 18, new Point(15, BarHeight / 2 - 9), BackgroundColor);
+            device.DrawRectangle(Point.Empty, Size, BackgroundColor);
+
+            if (BorderStyle == WindowBorderStyle.FixedSingle)
+            {
+                var invertedBackgroundColor = Color.FromArgb(BackgroundColor.ToArgb() ^ 0xffffff);
+                device.DrawRectangle(Point.Empty, new Size(Size.Width, BarHeight), invertedBackgroundColor);
+
+                device.DrawText(Title, 18, new Point(15, BarHeight / 2 - 9), BackgroundColor);
+            }
 
             base.Draw(device);
             //foreach (var control in Controls)
@@ -70,7 +87,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 
         public override void HandleMouseInput(Point mousePosition, MouseMessages mouseMessage)
         {
-            if (mousePosition.Y <= BarHeight)
+            if (BorderStyle == WindowBorderStyle.FixedSingle && mousePosition.Y <= BarHeight)
             {
                 if (mouseMessage == MouseMessages.WM_LBUTTONDOWN)
                 {
@@ -121,9 +138,20 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
             }
         }
 
-        public void HandleKeyboardInput(KeyboardHookKeyDown ev)
+        public new void HandleKeyboardInput(KeyboardHookKeyDown ev)
         {
             ActiveControl?.HandleKeyboardInput(ev);
         }
+
+        protected virtual void OnLoad(RenderDeviceEventArgs e)
+        {
+            Load?.Invoke(this, e);
+        }
+    }
+
+    public enum WindowBorderStyle
+    {
+        None,
+        FixedSingle
     }
 }

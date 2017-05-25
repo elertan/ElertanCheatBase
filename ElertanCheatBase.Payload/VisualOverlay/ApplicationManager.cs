@@ -29,7 +29,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay
         public void Draw(IRenderDevice desktopRenderDevice)
         {
             foreach (var app in RunningApplications)
-            foreach (var window in app.Windows.Where(w => w.Visible))
+            foreach (var window in app.Windows.Where(w => w.Visible).OrderByDescending(w => w.ZIndex))
             {
                 var windowRenderDevice = new PartialRenderDevice(desktopRenderDevice,
                     new Rectangle(window.Position.X, window.Position.Y - 20, window.Size.Width, window.Size.Height));

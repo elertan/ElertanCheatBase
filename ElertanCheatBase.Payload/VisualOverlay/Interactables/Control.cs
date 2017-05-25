@@ -67,12 +67,15 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 
         public virtual void Draw(IRenderDevice device)
         {
-            foreach (var control in Controls)
+            lock (Controls)
             {
-                var innerControlRenderDevice = new PartialRenderDevice(device,
-                    new Rectangle(control.Position.X, control.Position.Y, control.Size.Width,
-                        control.Size.Height));
-                control.Draw(innerControlRenderDevice);
+                foreach (var control in Controls)
+                {
+                    var innerControlRenderDevice = new PartialRenderDevice(device,
+                        new Rectangle(control.Position.X, control.Position.Y, control.Size.Width,
+                            control.Size.Height));
+                    control.Draw(innerControlRenderDevice);
+                }
             }
         }
 

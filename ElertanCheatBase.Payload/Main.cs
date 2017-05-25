@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using EasyHook;
 using ElertanCheatBase.Payload.InputHooks;
 
@@ -73,8 +74,9 @@ namespace ElertanCheatBase.Payload
                     Thread.Sleep(2);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Elertan Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
 #if DEBUG

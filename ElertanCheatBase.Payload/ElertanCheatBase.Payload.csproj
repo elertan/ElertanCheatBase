@@ -72,11 +72,13 @@
     <Compile Include="VisualOverlay\ApplicationManager.cs" />
     <Compile Include="VisualOverlay\Applications\DebugTool\App.cs" />
     <Compile Include="VisualOverlay\Applications\DebugTool\Windows\MainWindow.cs" />
+    <Compile Include="VisualOverlay\Applications\Dock\App.cs" />
+    <Compile Include="VisualOverlay\Applications\Dock\Windows\MainWindow.cs" />
     <Compile Include="VisualOverlay\Applications\Terminal\App.cs" />
     <Compile Include="VisualOverlay\Applications\Terminal\Windows\MainWindow.cs" />
+    <Compile Include="VisualOverlay\EventArguments\RenderDeviceEventArgs.cs" />
     <Compile Include="VisualOverlay\Interactables\Button.cs" />
     <Compile Include="VisualOverlay\Interactables\Control.cs" />
-    <Compile Include="VisualOverlay\Interactables\Dock.cs" />
     <Compile Include="VisualOverlay\Interactables\Label.cs" />
     <Compile Include="VisualOverlay\Interactables\ListBox.cs" />
     <Compile Include="VisualOverlay\Interactables\Textbox.cs" />

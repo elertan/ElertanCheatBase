@@ -3,8 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Rendering;
-using ElertanCheatBase.Payload.VisualOverlay.Applications.DebugTool;
-using ElertanCheatBase.Payload.VisualOverlay.Interactables;
+using ElertanCheatBase.Payload.VisualOverlay.Applications.Dock;
 
 namespace ElertanCheatBase.Payload.VisualOverlay
 {
@@ -16,14 +15,14 @@ namespace ElertanCheatBase.Payload.VisualOverlay
 
         static Overlay()
         {
-            var debugTool = AppManager.StartApplication(typeof(App));
+            var dock = (App)AppManager.StartApplication(typeof(App));
+            dock.AppManager = AppManager;
+            var debugTool = AppManager.StartApplication(typeof(Applications.DebugTool.App));
         }
 
         public static bool Enabled { get; set; }
 
         public static Keys ToggleKey { get; set; } = Keys.Insert;
-
-        private static Dock Dock { get; } = new Dock();
 
         public static Point PreMouseLockPoint { get; set; }
 
@@ -53,20 +52,12 @@ namespace ElertanCheatBase.Payload.VisualOverlay
             if (!Enabled) return;
             ViewPort = device.Viewport;
             DrawMenuBar(device);
-            DrawDock(device);
 
             var desktopRenderDevice = new PartialRenderDevice(device,
                 new Rectangle(0, 90, device.Viewport.Width, device.Viewport.Height - 90 - 40));
             AppManager.Draw(desktopRenderDevice);
 
             DrawCursor(device);
-        }
-
-        private static void DrawDock(IRenderDevice device)
-        {
-            var dockRenderDevice = new PartialRenderDevice(device,
-                new Rectangle(0, device.Viewport.Height - 40, device.Viewport.Width, device.Viewport.Height));
-            Dock.Draw(dockRenderDevice);
         }
 
         private static void DrawCursor(IRenderDevice device)
