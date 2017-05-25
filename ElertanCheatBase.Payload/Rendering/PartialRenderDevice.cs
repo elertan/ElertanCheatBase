@@ -11,6 +11,8 @@ namespace ElertanCheatBase.Payload.Rendering
             _renderDevice = renderDevice;
             Area = area;
             Viewport = renderDevice.Viewport;
+            Fps = renderDevice.Fps;
+            DeltaTime = renderDevice.DeltaTime;
         }
 
         public Size Viewport { get; set; }
@@ -22,19 +24,24 @@ namespace ElertanCheatBase.Payload.Rendering
             _renderDevice.DrawRectangle(pos, size, color);
         }
 
-        public virtual void DrawText(string text, int fontSize, Point position, Color color)
+        public Rectangle Area { get; set; }
+
+        public void DrawText(string text, int fontSize, Point position, Color color,
+            FontWeight weight = FontWeight.Normal)
         {
             var pos = new Point(Area.Left + position.X, Area.Top + position.Y);
 
-            _renderDevice.DrawText(text, fontSize, pos, color);
+            _renderDevice.DrawText(text, fontSize, pos, color, weight);
         }
 
-        public Rectangle Area { get; set; }
-
-        public void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color)
+        public void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color,
+            FontWeight weight = FontWeight.Normal)
         {
             var rec = new Rectangle(Area.Left + area.X, Area.Top + area.Y, area.Width, area.Height);
-            _renderDevice.DrawText(text, fontSize, rec, options, color);
+            _renderDevice.DrawText(text, fontSize, rec, options, color, weight);
         }
+
+        public int DeltaTime { get; set; }
+        public int Fps { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Applications.Terminal
 
         private void Setup()
         {
-            var window = new MainWindow(this) {Position = new Point(50, 50)};
+            var window = new MainWindow(this) {Position = new Point(0, 0)};
 
             Windows.Add(window);
         }

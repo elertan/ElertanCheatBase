@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Specialized;
 using System.Drawing;
 using System.Linq;
 using ElertanCheatBase.Payload.InputHooks;
@@ -6,8 +6,9 @@ using ElertanCheatBase.Payload.Rendering;
 
 namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 {
-    public class Window
+    public class Window : Control
     {
+        private Control _activeControl;
         private bool _isMovingWindow;
         private Point _movingWindowOffsetPoint = Point.Empty;
 
@@ -15,20 +16,42 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
         {
             Application = app;
             Title = Application.Name;
+            Size = new Size(500, 300);
+
+            Controls.CollectionChanged += Controls_CollectionChanged;
         }
 
         public Application Application { get; set; }
-        public Point Position { get; set; } = Point.Empty;
-        public Size Size { get; set; } = new Size(640, 480);
+        // public Point Position { get; set; } = Point.Empty;
+        //public Size Size { get; set; } = new Size(640, 480);
         public Color BackgroundColor { get; set; } = Color.FromArgb(20, 20, 20);
-        public bool Visible { get; set; } = true;
+        //public bool Visible { get; set; } = true;
         public string Title { get; set; }
 
         public int BarHeight { get; set; } = 30;
 
-        public List<Control> Controls { get; set; } = new List<Control>();
+        public int ZIndex { get; set; }
 
-        public void Draw(IRenderDevice device)
+        public Control ActiveControl
+        {
+            get { return _activeControl; }
+            set
+            {
+                var control = Controls.FirstOrDefault(c => c.Active && c != value);
+                if (control != null) control.Active = false;
+                _activeControl = value;
+            }
+        }
+
+        private void Controls_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (var control in e.NewItems.Cast<Control>())
+                control.Owner = this;
+        }
+
+        //public List<Control> Controls { get; set; } = new List<Control>();
+
+        public override void Draw(IRenderDevice device)
         {
             device.DrawRectangle(Point.Empty, Size, BackgroundColor);
             var invertedBackgroundColor = Color.FromArgb(BackgroundColor.ToArgb() ^ 0xffffff);
@@ -36,15 +59,16 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 
             device.DrawText(Title, 18, new Point(15, BarHeight / 2 - 9), BackgroundColor);
 
-            foreach (var control in Controls)
-            {
-                var controlRenderDevice = new PartialRenderDevice(device,
-                    new Rectangle(control.Position.X, control.Position.Y, control.Size.Width, control.Size.Height));
-                control.Draw(controlRenderDevice);
-            }
+            base.Draw(device);
+            //foreach (var control in Controls)
+            //{
+            //    var controlRenderDevice = new PartialRenderDevice(device,
+            //        new Rectangle(control.Position.X, control.Position.Y, control.Size.Width, control.Size.Height));
+            //    control.Draw(controlRenderDevice);
+            //}
         }
 
-        public void HandleMouseInput(Point mousePosition, MouseMessages mouseMessage)
+        public override void HandleMouseInput(Point mousePosition, MouseMessages mouseMessage)
         {
             if (mousePosition.Y <= BarHeight)
             {
@@ -69,6 +93,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
             }
             else
             {
+                var controlsHandled = 0;
                 _isMovingWindow = false;
                 foreach (var control in Controls.Where(c => c.Visible))
                     if (mousePosition.X >= control.Position.X &&
@@ -80,8 +105,25 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
                         var mousePos = new Point(mousePosition.X - control.Position.X,
                             mousePosition.Y - control.Position.Y);
                         control.HandleMouseInput(mousePos, mouseMessage);
+                        controlsHandled++;
                     }
+                    else if (control.IsBeingHovered)
+                    {
+                        control.MouseUnhovered();
+                    }
+
+                if (controlsHandled == 0 && mouseMessage == MouseMessages.WM_LBUTTONDOWN)
+                {
+                    foreach (var control in Controls)
+                        if (control.Active) control.Active = false;
+                    ActiveControl = null;
+                }
             }
+        }
+
+        public void HandleKeyboardInput(KeyboardHookKeyDown ev)
+        {
+            ActiveControl?.HandleKeyboardInput(ev);
         }
     }
 }

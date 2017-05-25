@@ -42,7 +42,7 @@ namespace ElertanCheatBase.Payload.InputHooks
                     var vkCode = Marshal.ReadInt32(lParam);
                     var key = (Keys) vkCode;
 
-                    OnKeyDownOccured(new KeyboardHookKeyDown {Key = key});
+                    OnKeyDownOccured(new KeyboardHookKeyDown {Keys = key});
 
                     if (BlockInput) return 1;
                 }
@@ -57,6 +57,6 @@ namespace ElertanCheatBase.Payload.InputHooks
 
     public class KeyboardHookKeyDown : EventArgs
     {
-        public Keys Key { get; set; }
+        public Keys Keys { get; set; }
     }
 }

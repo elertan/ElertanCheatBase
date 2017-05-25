@@ -18,17 +18,23 @@ namespace ElertanCheatBase.Payload.Rendering
             throw new NotImplementedException();
         }
 
-        public virtual void DrawText(string text, int fontSize, Point position, Color color)
-        {
-            throw new NotImplementedException();
-        }
-
         public Rectangle Area { get; set; }
 
-        public virtual void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color)
+        public virtual void DrawText(string text, int fontSize, Point position, Color color,
+            FontWeight weight = FontWeight.Normal)
         {
             throw new NotImplementedException();
         }
+
+        public virtual void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color,
+            FontWeight weight = FontWeight.Normal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int DeltaTime { get; set; }
+
+        public int Fps { get; set; }
 
         public virtual PartialRenderDevice CreatePartialDevice(Rectangle area)
         {

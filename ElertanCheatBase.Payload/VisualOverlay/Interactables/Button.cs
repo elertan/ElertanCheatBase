@@ -7,31 +7,38 @@ namespace ElertanCheatBase.Payload.VisualOverlay.Interactables
 {
     public class Button : Control
     {
-        private Size _size = new Size(80, 25);
-
         public Button()
         {
-            InnerControls.Add(TextLabel);
-        }
+            TextLabel.FontDrawOptions |= FontDrawOptions.Center;
 
-        public new Size Size
-        {
-            get { return _size; }
-            set
-            {
-                _size = value;
-                TextLabel.Size = value;
-            }
+            Controls.Add(TextLabel);
+
+            Hovered += Button_Hovered;
+            Unhovered += Button_Unhovered;
+            SizeChanged += Button_SizeChanged;
         }
 
         public Label TextLabel { get; set; } = new Label();
         public Color BackgroundColor { get; set; } = Color.DarkGray;
         public Color BorderColor { get; set; } = Color.Black;
 
+        private void Button_Unhovered(object sender, EventArgs e)
+        {
+            BackgroundColor = Color.DarkGray;
+        }
+
+        private void Button_SizeChanged(object sender, EventArgs e)
+        {
+            TextLabel.Size = Size;
+        }
+
+        private void Button_Hovered(object sender, EventArgs e)
+        {
+            BackgroundColor = Color.LightGray;
+        }
+
         public override void HandleMouseInput(Point mousePos, MouseMessages mouseMessage)
         {
-
-
             base.HandleMouseInput(mousePos, mouseMessage);
         }
 

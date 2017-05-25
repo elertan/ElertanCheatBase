@@ -3,8 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Rendering;
-using ElertanCheatBase.Payload.VisualOverlay.Applications;
-using ElertanCheatBase.Payload.VisualOverlay.Applications.Terminal;
+using ElertanCheatBase.Payload.VisualOverlay.Applications.DebugTool;
 using ElertanCheatBase.Payload.VisualOverlay.Interactables;
 
 namespace ElertanCheatBase.Payload.VisualOverlay
@@ -17,7 +16,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay
 
         static Overlay()
         {
-            var terminal = AppManager.StartApplication(typeof(App));
+            var debugTool = AppManager.StartApplication(typeof(App));
         }
 
         public static bool Enabled { get; set; }
@@ -85,6 +84,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay
             menuBarRenderDevice.DrawText($"Elertan's Cheat for {Main.Process.MainWindowTitle}", 21, new Point(20, 10),
                 Color.White);
             menuBarRenderDevice.DrawText(DateTime.Now.ToLongTimeString(), 21, new Point(35, 40), Color.White);
+            menuBarRenderDevice.DrawText($"FPS: {device.Fps}", 21, new Point(300, 40), Color.White);
         }
 
         /// <summary>
@@ -109,6 +109,15 @@ namespace ElertanCheatBase.Payload.VisualOverlay
         {
             PreMouseLockPoint = ev.MouseInfo.Point;
             MousePosition = PreMouseLockPoint;
+        }
+
+        public static void HandleKeyboardInput(KeyboardHookKeyDown ev)
+        {
+            AppManager.HandleKeyboardInput(ev);
+        }
+
+        public static void ListenKeyboardInput(KeyboardHookKeyDown ev)
+        {
         }
     }
 }

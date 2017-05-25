@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using SharpDX.Direct3D9;
 using SharpDX.Mathematics.Interop;
 using Font = SharpDX.Direct3D9.Font;
@@ -31,7 +32,8 @@ namespace ElertanCheatBase.Payload.Rendering
             _device.Clear(ClearFlags.Target, GetColor(color), 0, 0, new[] {rect});
         }
 
-        public override void DrawText(string text, int fontSize, Point position, Color color)
+
+        public override void DrawText(string text, int fontSize, Point position, Color color, FontWeight fw)
         {
             if (text.Length == 0) text = "ERROR: EMPTY STRING GIVEN";
 
@@ -42,7 +44,7 @@ namespace ElertanCheatBase.Payload.Rendering
                         FaceName = "Verdana",
                         OutputPrecision = FontPrecision.TrueTypeOnly,
                         Quality = FontQuality.Antialiased,
-                        Weight = FontWeight.Bold,
+                        Weight = FontWeightToSharpDXFontWeight(fw),
                         Height = fontSize
                     }))
             {
@@ -50,7 +52,8 @@ namespace ElertanCheatBase.Payload.Rendering
             }
         }
 
-        public override void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color)
+        public override void DrawText(string text, int fontSize, Rectangle area, FontDrawOptions options, Color color,
+            FontWeight fw)
         {
             if (text.Length == 0) text = "ERROR: EMPTY STRING GIVEN";
 
@@ -61,13 +64,27 @@ namespace ElertanCheatBase.Payload.Rendering
                         FaceName = "Verdana",
                         OutputPrecision = FontPrecision.TrueTypeOnly,
                         Quality = FontQuality.Antialiased,
-                        Weight = FontWeight.Bold,
+                        Weight = FontWeightToSharpDXFontWeight(fw),
                         Height = fontSize
                     }))
             {
                 var rawRectangle = new RawRectangle(area.Left, area.Top, area.Right, area.Bottom);
                 font.DrawText(null, text, rawRectangle, FontDrawOptionsToFontDrawFlags(options), GetColor(color));
             }
+        }
+
+        private static SharpDX.Direct3D9.FontWeight FontWeightToSharpDXFontWeight(FontWeight fw)
+        {
+            switch (fw)
+            {
+                case FontWeight.Normal:
+                    return SharpDX.Direct3D9.FontWeight.Bold;
+                case FontWeight.Bold:
+                    return SharpDX.Direct3D9.FontWeight.ExtraBold;
+                case FontWeight.Thin:
+                    return SharpDX.Direct3D9.FontWeight.Normal;
+            }
+            throw new Exception("FontWeight not supported by abstract renderer");
         }
 
         private static FontDrawFlags FontDrawOptionsToFontDrawFlags(FontDrawOptions options)

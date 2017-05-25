@@ -5,6 +5,7 @@ using System.Linq;
 using ElertanCheatBase.Payload.InputHooks;
 using ElertanCheatBase.Payload.Rendering;
 using ElertanCheatBase.Payload.VisualOverlay.Applications.Terminal;
+using ElertanCheatBase.Payload.VisualOverlay.Interactables;
 
 namespace ElertanCheatBase.Payload.VisualOverlay
 {
@@ -31,7 +32,7 @@ namespace ElertanCheatBase.Payload.VisualOverlay
             foreach (var window in app.Windows.Where(w => w.Visible))
             {
                 var windowRenderDevice = new PartialRenderDevice(desktopRenderDevice,
-                    new Rectangle(window.Position.X, window.Position.Y, window.Size.Width, window.Size.Height));
+                    new Rectangle(window.Position.X, window.Position.Y - 20, window.Size.Width, window.Size.Height));
                 window.Draw(windowRenderDevice);
             }
         }
@@ -49,6 +50,18 @@ namespace ElertanCheatBase.Payload.VisualOverlay
                         mousePosition.Y - window.Position.Y);
                     window.HandleMouseInput(partialPosition, mouseMessage);
                 }
+        }
+
+        public void HandleKeyboardInput(KeyboardHookKeyDown ev)
+        {
+            var visibleWindows = new List<Window>();
+            // Is there any window visible
+            foreach (var app in RunningApplications)
+            {
+                visibleWindows.AddRange(app.Windows.Where(w => w.Visible));
+            }
+            var window = visibleWindows.OrderByDescending(w => w.ZIndex).First();
+            window.HandleKeyboardInput(ev);
         }
     }
 }
