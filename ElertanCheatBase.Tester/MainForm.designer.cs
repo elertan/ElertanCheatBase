@@ -34,31 +34,35 @@
             // 
             // MarqueeProgressBar
             // 
-            this.MarqueeProgressBar.Location = new System.Drawing.Point(12, 12);
+            this.MarqueeProgressBar.Location = new System.Drawing.Point(24, 23);
+            this.MarqueeProgressBar.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.MarqueeProgressBar.MarqueeAnimationSpeed = 25;
             this.MarqueeProgressBar.Name = "MarqueeProgressBar";
-            this.MarqueeProgressBar.Size = new System.Drawing.Size(260, 23);
+            this.MarqueeProgressBar.Size = new System.Drawing.Size(520, 44);
             this.MarqueeProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.MarqueeProgressBar.TabIndex = 0;
             // 
             // StatusLabel
             // 
             this.StatusLabel.Font = new System.Drawing.Font("Comic Sans MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.StatusLabel.Location = new System.Drawing.Point(0, 43);
+            this.StatusLabel.Location = new System.Drawing.Point(0, 83);
+            this.StatusLabel.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.StatusLabel.Name = "StatusLabel";
-            this.StatusLabel.Size = new System.Drawing.Size(284, 23);
+            this.StatusLabel.Size = new System.Drawing.Size(568, 44);
             this.StatusLabel.TabIndex = 1;
             this.StatusLabel.Text = "Status";
             this.StatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.StatusLabel.Click += new System.EventHandler(this.StatusLabel_Click);
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 73);
+            this.ClientSize = new System.Drawing.Size(568, 140);
             this.Controls.Add(this.StatusLabel);
             this.Controls.Add(this.MarqueeProgressBar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

@@ -46,14 +46,12 @@ namespace ElertanCheatBase
         /// </summary>
         public string InternalPayloadPath { get; set; }
 
-        public VisualRenderType VisualRenderType { get; set; } = VisualRenderType.None;
 
         public void Run()
         {
             if (InternalMode)
             {
                 if (InternalPayloadPath.Length == 0) throw new InternalPayloadPathNotSetException();
-                InternalPayloadParameters.Insert(0, VisualRenderType);
                 var parameters = InternalPayloadParameters.ToArray();
                 if (!PayloadInjector.InjectPayload(TargetProcess, InternalPayloadPath, parameters))
                     throw new InjectPayloadFailedException();

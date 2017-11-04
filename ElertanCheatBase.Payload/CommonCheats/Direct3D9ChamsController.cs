@@ -6,7 +6,7 @@ using SharpDX.Direct3D9;
 
 namespace ElertanCheatBase.Payload.CommonCheats
 {
-    public class ChamsController
+    public class Direct3D9ChamsController
     {
         private readonly Dictionary<string, byte[]> _colorBuffersForTextures = new Dictionary<string, byte[]>();
         public bool Enabled { get; set; } = true;

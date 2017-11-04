@@ -17,7 +17,7 @@ namespace ElertanCheatBase.Csgo.Payload.Chams
                    numVertices == 1134 && primitiveCount == 2024 || numVertices == 1430 && primitiveCount == 2422;
         }
 
-        public override Texture DetermineTexture(ChamsController controller)
+        public override Texture DetermineTexture(Direct3D9ChamsController controller)
         {
             return controller.ResolveTexture("blue");
         }

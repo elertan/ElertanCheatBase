@@ -58,5 +58,10 @@ namespace ElertanCheatBase.Csgo
         {
             _processHelper?.Dispose();
         }
+
+        private void StatusLabel_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElertanCheatBase", "ElertanCheatBase\ElertanCheatBase.csproj", "{9289F403-C66F-46A9-A835-07E539B395D8}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElertanCheatBase.Csgo.Payload", "ElertanCheatBase.Tester.Payload\ElertanCheatBase.Csgo.Payload.csproj", "{3C68D273-0DDF-42B6-863A-4D2825F195F9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ElertanCheatBase.Payload.Hooks", "ElertanCheatBase.Payload.Hooks\ElertanCheatBase.Payload.Hooks.vcxproj", "{385B7D64-B975-4F5C-8D6A-4660577104F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuBot", "OsuBot\OsuBot.csproj", "{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuBot.Payload", "OsuBot.Payload\OsuBot.Payload.csproj", "{A4ECD82C-17E1-4092-869B-AA344312F4B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,8 +85,35 @@ Global
 		{385B7D64-B975-4F5C-8D6A-4660577104F5}.Release|x64.Build.0 = Release|x64
 		{385B7D64-B975-4F5C-8D6A-4660577104F5}.Release|x86.ActiveCfg = Release|Win32
 		{385B7D64-B975-4F5C-8D6A-4660577104F5}.Release|x86.Build.0 = Release|Win32
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Debug|x86.Build.0 = Debug|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Release|x64.Build.0 = Release|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Release|x86.ActiveCfg = Release|Any CPU
+		{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}.Release|x86.Build.0 = Release|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Debug|x64.Build.0 = Debug|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Release|x64.ActiveCfg = Release|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Release|x64.Build.0 = Release|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{A4ECD82C-17E1-4092-869B-AA344312F4B0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9996581F-3D1B-4E28-B9BD-377463A9D55C}
 	EndGlobalSection
 EndGlobal

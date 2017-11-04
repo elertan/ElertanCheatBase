@@ -13,7 +13,7 @@ namespace ElertanCheatBase.Payload
             Main.KeepRunning = false;
         }
 
-        public ChamsController ChamsController { get; set; }
+        public Direct3D9ChamsController Direct3D9ChamsController { get; set; }
 
         public void Exit()
         {
@@ -22,12 +22,15 @@ namespace ElertanCheatBase.Payload
 
         public virtual void Initialize(Process p)
         {
-            ChamsController = new ChamsController();
+            if (Core.VisualRenderType == VisualRenderType.Direct3D9)
+            {
+                Direct3D9ChamsController = new Direct3D9ChamsController();
+            }
         }
 
         public virtual void Direct3D9_EndScene(Device device)
         {
-            ChamsController.Direct3D9_EndScene(device);
+            Direct3D9ChamsController.Direct3D9_EndScene(device);
         }
 
         public virtual void Direct3D9_DrawIndexedPrimitive(Device device,
@@ -38,7 +41,7 @@ namespace ElertanCheatBase.Payload
             int startIndex,
             int primCount)
         {
-            ChamsController.Direct3D9_DrawIndexedPrimitive(device, primitiveType, baseVertexIndex, minVertexIndex,
+            Direct3D9ChamsController.Direct3D9_DrawIndexedPrimitive(device, primitiveType, baseVertexIndex, minVertexIndex,
                 numVertices,
                 startIndex, primCount);
         }

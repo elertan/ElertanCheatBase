@@ -13,15 +13,15 @@ namespace ElertanCheatBase.Payload
             EncryptedData = EncryptString(originalString);
         }
 
-        public string EncryptedData { get; set; }
+        protected string EncryptedData { get; set; }
 
         public string Value
         {
-            get { return DecryptString(EncryptedData); }
-            set { EncryptedData = EncryptString(value); }
+            get => DecryptString(EncryptedData);
+            set => EncryptedData = EncryptString(value);
         }
 
-        private string EncryptString(string str)
+        protected string EncryptString(string str)
         {
             if (str.Length == 0) return str;
             str = new string(str.Reverse().ToArray());
@@ -30,7 +30,7 @@ namespace ElertanCheatBase.Payload
             return str;
         }
 
-        private string DecryptString(string str)
+        protected string DecryptString(string str)
         {
             if (str.Length == 0) return str;
             if (str.Length > 2)

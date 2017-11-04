@@ -36,11 +36,11 @@ namespace ElertanCheatBase.Csgo.Payload
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00
             };
 
-            ChamsController.CreateTexture("blue", blueColor);
-            ChamsController.CreateTexture("red", redColor);
+            Direct3D9ChamsController.CreateTexture("blue", blueColor);
+            Direct3D9ChamsController.CreateTexture("red", redColor);
 
-            ChamsController.Chams.Add(new TerroristCham {Enabled = true});
-            ChamsController.Chams.Add(new CounterTerroristCham {Enabled = true});
+            Direct3D9ChamsController.Chams.Add(new TerroristCham {Enabled = true});
+            Direct3D9ChamsController.Chams.Add(new CounterTerroristCham {Enabled = true});
         }
 
         public override void Direct3D9_EndScene(Device device)

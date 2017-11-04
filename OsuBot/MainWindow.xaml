@@ -1,0 +1,24 @@
+﻿<Window x:Class="OsuBot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OsuBot"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Loaded="MainWindow_OnLoaded"
+        Title="OsuBot" Height="200" Width="350">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ProgressBar IsIndeterminate="True"
+                     Height="30"
+                     Grid.Row="0"/>
+        <Label Content="Waiting for Osu! to start..."
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Grid.Row="1"/>
+    </Grid>
+</Window>

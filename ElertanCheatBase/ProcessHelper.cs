@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 
-namespace ElertanCheatBase.Csgo
+namespace ElertanCheatBase
 {
-    class ProcessHelper : IDisposable
+    public class ProcessHelper : IDisposable
     {
         private readonly string _processName;
         public Process Process;

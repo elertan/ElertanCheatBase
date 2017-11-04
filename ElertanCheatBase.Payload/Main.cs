@@ -8,6 +8,7 @@ namespace ElertanCheatBase.Payload
 {
     public class Main : IEntryPoint
     {
+        private readonly VisualRenderType _visualRenderType;
         public static bool KeepRunning = true;
 
 #if DEBUG
@@ -18,18 +19,28 @@ namespace ElertanCheatBase.Payload
 
         public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
         {
+            _visualRenderType = visualRenderType;
             // Connect to server object using provided channel name
             var @interface = RemoteHooking.IpcConnectClient<InjectorInterface>(channelName);
 
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             foreach (ProcessModule processModule in Process.Modules)
-                ModuleInfos.Add(processModule.ModuleName,
-                    new ModuleInfo
-                    {
-                        Name = processModule.ModuleName,
-                        MemorySize = processModule.ModuleMemorySize,
-                        Address = processModule.BaseAddress
-                    });
+            {
+                try
+                {
+                    ModuleInfos.Add(processModule.ModuleName,
+                        new ModuleInfo
+                        {
+                            Name = processModule.ModuleName,
+                            MemorySize = processModule.ModuleMemorySize,
+                            Address = processModule.BaseAddress
+                        });
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
 
             // If Ping fails then the Run method will be not be called
             @interface.Ping();
@@ -38,17 +49,17 @@ namespace ElertanCheatBase.Payload
         public static Process Process { get; set; }
         public static Dictionary<string, ModuleInfo> ModuleInfos { get; } = new Dictionary<string, ModuleInfo>();
 
-        public void Run(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
+        public void Run(RemoteHooking.IContext context, string channelName)
         {
 #if DEBUG
-            // Instant launch debugger on debug build (does cause crash when csgo is not already running)
+            // Instant launch debugger on debug build (does cause crash when the process is not already running)
             Debugger.Launch();
 #endif
             Process = Process.GetProcessById(RemoteHooking.GetCurrentProcessId());
             if (HookBase == null) throw new Exception("HookBase must be set");
             // Install
 
-            Core.VisualRenderType = visualRenderType;
+            Core.VisualRenderType = _visualRenderType;
             Core.Install(Process, HookBase);
 
             InitializeAction?.Invoke();

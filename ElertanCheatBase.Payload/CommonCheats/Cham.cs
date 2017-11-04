@@ -13,7 +13,7 @@ namespace ElertanCheatBase.Payload.CommonCheats
             throw new NotImplementedException("Will cham be used not implemented");
         }
 
-        public virtual Texture DetermineTexture(ChamsController controller)
+        public virtual Texture DetermineTexture(Direct3D9ChamsController controller)
         {
             throw new NotImplementedException("Determine texture method is not set for cham");
         }

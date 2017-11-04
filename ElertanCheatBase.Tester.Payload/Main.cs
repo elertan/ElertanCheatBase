@@ -8,8 +8,8 @@ namespace ElertanCheatBase.Csgo.Payload
 {
     public class Main : ElertanCheatBase.Payload.Main
     {
-        public Main(RemoteHooking.IContext context, string channelName, VisualRenderType visualRenderType)
-            : base(context, channelName, visualRenderType)
+        public Main(RemoteHooking.IContext context, string channelName)
+            : base(context, channelName, VisualRenderType.Direct3D9)
         {
             HookBase = new HookBase();
             InitializeAction = Initialize;

@@ -14,7 +14,7 @@ namespace ElertanCheatBase
     {
 
         /// <summary>
-        /// Injects our payload into the csgo process
+        /// Injects our payload into the process
         /// </summary>
         /// <param name="process">the process</param>
         /// <param name="injectionLibrary">the payload lib</param>
@@ -36,8 +36,8 @@ namespace ElertanCheatBase
                     process.Id, // ID of process to inject into
                     injectionLibrary, // 32-bit library to inject (if target is 32-bit)
                     injectionLibrary, // 64-bit library to inject (if target is 64-bit)
-                    channelName, // the parameters to pass into injected library
-                    passParams.First()
+                    channelName 
+                    // the parameters to pass into injected library
                 );
                 return true;
             }
