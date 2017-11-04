@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace OsuBot.Payload
 {
@@ -18,7 +19,9 @@ namespace OsuBot.Payload
         {
             base.Initialize(p);
 
-            Debug.WriteLine($"Hey there! I'm inside of {p.ProcessName}");
+            MessageBox.Show($"Hey there! I'm inside of {p.ProcessName}");
+
+            Exit();
         }
     }
 }
