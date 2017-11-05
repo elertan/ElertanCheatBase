@@ -90,6 +90,9 @@ namespace ElertanCheatBase.Payload
         [DllImport("kernel32.dll", EntryPoint = "FreeConsole", SetLastError = true, CharSet = CharSet.Auto,
             CallingConvention = CallingConvention.StdCall)]
         public static extern int FreeConsole();
+
+        [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]

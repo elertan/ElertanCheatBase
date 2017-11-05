@@ -12,7 +12,7 @@ namespace OsuBot.Payload
     public class Main : ElertanCheatBase.Payload.Main
     {
         public Main(RemoteHooking.IContext context, string channelName)
-            : base(context, channelName, VisualRenderType.None)
+            : base(context, channelName, VisualRenderType.OpenGl)
         {
             HookBase = new HookBase();
             InitializeAction = Initialize;

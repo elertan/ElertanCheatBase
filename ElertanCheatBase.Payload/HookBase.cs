@@ -45,5 +45,9 @@ namespace ElertanCheatBase.Payload
                 numVertices,
                 startIndex, primCount);
         }
+
+        public virtual void OpenGL_GlBegin(OpenGL.DeviceContext ctx, OpenGL.PrimitiveType mode)
+        {
+        }
     }
 }

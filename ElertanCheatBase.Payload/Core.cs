@@ -30,6 +30,11 @@ namespace ElertanCheatBase.Payload
                     break;
                 case VisualRenderType.None:
                     break;
+                case VisualRenderType.OpenGl:
+                    _hooks.Add(new OpenGl());
+                    break;
+                case VisualRenderType.AutomaticallyDetect:
+                    throw new NotImplementedException("Automatic detection of visual render type is currently not supported.");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

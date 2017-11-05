@@ -9,6 +9,8 @@ namespace ElertanCheatBase.Payload
     public enum VisualRenderType
     {
         Direct3D9,
+        OpenGl,
+        AutomaticallyDetect, // Not Supported Yet
         None
     }
 }

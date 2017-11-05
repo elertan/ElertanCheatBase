@@ -34,6 +34,9 @@
     <Reference Include="EasyHook, Version=2.7.6270.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <HintPath>..\packages\EasyHook.2.7.6270\lib\net40\EasyHook.dll</HintPath>
     </Reference>
+    <Reference Include="OpenGL.Net, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenGL.Net.0.6.1\lib\net35\OpenGL.Net.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.0.1\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -42,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -69,6 +73,7 @@
     <Compile Include="VisualOverlay.cs" />
     <Compile Include="VisualOverlayItems\Window.cs" />
     <Compile Include="VisualRenderHooks\DirectD3D9.cs" />
+    <Compile Include="VisualRenderHooks\OpenGl.cs" />
     <Compile Include="VisualRenderType.cs" />
     <Compile Include="WinApi.cs" />
   </ItemGroup>

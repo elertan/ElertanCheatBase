@@ -19,9 +19,9 @@ namespace OsuBot.Payload
         {
             base.Initialize(p);
 
-            MessageBox.Show($"Hey there! I'm inside of {p.ProcessName}");
+            //MessageBox.Show($"Hey there! I'm inside of {p.ProcessName}");
 
-            Exit();
+            //Exit();
         }
     }
 }
