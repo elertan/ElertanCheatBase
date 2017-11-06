@@ -14,6 +14,7 @@ namespace ElertanCheatBase.Payload
         }
 
         public Direct3D9ChamsController Direct3D9ChamsController { get; set; }
+        public Process Process { get; private set; }
 
         public void Exit()
         {
@@ -22,6 +23,8 @@ namespace ElertanCheatBase.Payload
 
         public virtual void Initialize(Process p)
         {
+            Process = p;
+
             if (Core.VisualRenderType == VisualRenderType.Direct3D9)
             {
                 Direct3D9ChamsController = new Direct3D9ChamsController();
@@ -48,6 +51,7 @@ namespace ElertanCheatBase.Payload
 
         public virtual void OpenGL_GlBegin(OpenGL.DeviceContext ctx, OpenGL.PrimitiveType mode)
         {
+            
         }
     }
 }

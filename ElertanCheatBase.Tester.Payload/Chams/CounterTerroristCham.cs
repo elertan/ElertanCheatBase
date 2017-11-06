@@ -3,9 +3,12 @@ using SharpDX.Direct3D9;
 
 namespace ElertanCheatBase.Csgo.Payload.Chams
 {
-    public class CounterTerroristCham : Cham
+    public class CounterTerroristCham : ICham
     {
-        public override bool WillChamBeUsed(int numVertices, int primitiveCount)
+        public bool Enabled { get; set; }
+        public bool VisibleThroughWalls { get; set; }
+
+        public bool WillChamBeUsed(int numVertices, int primitiveCount)
         {
             // LEGS BODY NOT WORKING EITHER
             return numVertices == 1986 && primitiveCount == 3044 || numVertices == 1889 && primitiveCount == 3088 ||
@@ -17,7 +20,7 @@ namespace ElertanCheatBase.Csgo.Payload.Chams
                    numVertices == 1134 && primitiveCount == 2024 || numVertices == 1430 && primitiveCount == 2422;
         }
 
-        public override Texture DetermineTexture(Direct3D9ChamsController controller)
+        public Texture DetermineTexture(Direct3D9ChamsController controller)
         {
             return controller.ResolveTexture("blue");
         }

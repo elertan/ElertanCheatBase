@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElertanCheatBase", "ElertanCheatBase\ElertanCheatBase.csproj", "{9289F403-C66F-46A9-A835-07E539B395D8}"
 EndProject
@@ -16,6 +16,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuBot", "OsuBot\OsuBot.csproj", "{7CD05E2D-B75F-477A-B450-0693DB3CB8F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuBot.Payload", "OsuBot.Payload\OsuBot.Payload.csproj", "{A4ECD82C-17E1-4092-869B-AA344312F4B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Important Files", "Important Files", "{18B1D45E-06FB-4ABB-B8C7-7792D1F4F002}"
+	ProjectSection(SolutionItems) = preProject
+		README.txt = README.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

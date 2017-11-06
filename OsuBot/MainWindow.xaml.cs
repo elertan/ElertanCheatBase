@@ -70,7 +70,6 @@ namespace OsuBot
             catch (InjectPayloadFailedException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                throw;
             }
             Dispatcher.Invoke(Close);
         }

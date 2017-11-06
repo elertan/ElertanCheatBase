@@ -11,7 +11,7 @@ namespace ElertanCheatBase.Payload.CommonCheats
         private readonly Dictionary<string, byte[]> _colorBuffersForTextures = new Dictionary<string, byte[]>();
         public bool Enabled { get; set; } = true;
         private Dictionary<string, Texture> Textures { get; } = new Dictionary<string, Texture>();
-        public List<Cham> Chams { get; set; } = new List<Cham>();
+        public List<ICham> Chams { get; set; } = new List<ICham>();
 
         public void CreateTexture(string key, byte[] colorBuffer)
         {

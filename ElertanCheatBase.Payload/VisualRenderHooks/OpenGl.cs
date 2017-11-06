@@ -5,13 +5,14 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using EasyHook;
 using ElertanCheatBase.Payload.Interfaces;
 using OpenGL;
 
 namespace ElertanCheatBase.Payload.VisualRenderHooks
 {
-    class OpenGl : IHook
+    internal class OpenGl : IHook
     {
         private HookBase _hookBase;
         private LocalHook _glBeginLocalHook;

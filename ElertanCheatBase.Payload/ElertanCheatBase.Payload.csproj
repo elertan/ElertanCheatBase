@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonCheats\Cham.cs" />
+    <Compile Include="CommonCheats\ICham.cs" />
     <Compile Include="CommonCheats\Direct3D9ChamsController.cs" />
     <Compile Include="Direct3D9HelperMethods.cs" />
     <Compile Include="EncryptedString.cs" />
