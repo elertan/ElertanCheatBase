@@ -93,6 +93,63 @@ namespace ElertanCheatBase.Payload
 
         [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+        [DllImport("kernel32.dll")]
+        public static extern int VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, uint dwLength);
+        [DllImport("kernel32.dll")]
+        public static extern int VirtualQuery(
+            ref UIntPtr lpAddress,
+            ref MEMORY_BASIC_INFORMATION lpBuffer,
+            int dwLength
+        );
+
+        [DllImport("kernel32.dll", SetLastError = false)]
+
+        public static extern void GetSystemInfo(out SystemInfo info);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool ReadProcessMemory(
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            [Out] byte[] lpBuffer,
+            int dwSize,
+            out IntPtr lpNumberOfBytesRead);
+    }
+
+    public enum ProcessorArchitecture
+    {
+        X86 = 0,
+        X64 = 9,
+        @Arm = -1,
+        Itanium = 6,
+        Unknown = 0xFFFF,
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SystemInfo
+    {
+        public ProcessorArchitecture ProcessorArchitecture; // WORD
+        public uint PageSize; // DWORD
+        public IntPtr MinimumApplicationAddress; // (long)void*
+        public IntPtr MaximumApplicationAddress; // (long)void*
+        public IntPtr ActiveProcessorMask; // DWORD*
+        public uint NumberOfProcessors; // DWORD (WTF)
+        public uint ProcessorType; // DWORD
+        public uint AllocationGranularity; // DWORD
+        public ushort ProcessorLevel; // WORD
+        public ushort ProcessorRevision; // WORD
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MEMORY_BASIC_INFORMATION
+    {
+        public IntPtr BaseAddress;
+        public IntPtr AllocationBase;
+        public uint AllocationProtect;
+        public IntPtr RegionSize;
+        public uint State;
+        public uint Protect;
+        public uint Type;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 8)]

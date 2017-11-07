@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using ElertanCheatBase.Payload.CommonCheats;
+using Microsoft.Win32.SafeHandles;
 using SharpDX.Direct3D9;
 
 namespace ElertanCheatBase.Payload
@@ -15,6 +18,20 @@ namespace ElertanCheatBase.Payload
 
         public Direct3D9ChamsController Direct3D9ChamsController { get; set; }
         public Process Process { get; private set; }
+
+        public void OpenConsole()
+        {
+            const int STD_OUTPUT_HANDLE = -11;
+            const int MY_CODE_PAGE = 437;
+
+            WinApi.AllocConsole();
+            var stdHandle = WinApi.GetStdHandle(STD_OUTPUT_HANDLE);
+            var safeFileHandle = new SafeFileHandle(stdHandle, true);
+            var fileStream = new FileStream(safeFileHandle, FileAccess.Write);
+            var encoding = Encoding.GetEncoding(MY_CODE_PAGE);
+            var standardOutput = new StreamWriter(fileStream, encoding) {AutoFlush = true};
+            Console.SetOut(standardOutput);
+        }
 
         public void Exit()
         {

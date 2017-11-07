@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -9,6 +10,17 @@ namespace ElertanCheatBase.Payload
 {
     public static class Memory
     {
+        private static uint _pageSize;
+        public static uint PageSize
+        {
+            get
+            {
+                if (_pageSize != default(uint)) return _pageSize;
+                WinApi.GetSystemInfo(out var info);
+                _pageSize = info.PageSize;
+                return _pageSize;
+            }
+        }
         public static Process Process { get; private set; }
         public static ProcessModule[] Modules { get; private set; }
 
@@ -50,6 +62,12 @@ namespace ElertanCheatBase.Payload
             return BitConverter.ToSingle(bytes, 0);
         }
 
+        public static double ReadDouble(IntPtr address, params int[] offsets)
+        {
+            var bytes = ReadBytes(address, sizeof(double), offsets);
+            return BitConverter.ToDouble(bytes, 0);
+        }
+
         public static int ReadInt32(IntPtr address, int offset = 0) => Marshal.ReadInt32(address, offset);
 
         /// <summary>
@@ -57,8 +75,8 @@ namespace ElertanCheatBase.Payload
         /// </summary>
         public class SignatureScanner
         {
-            public IntPtr Address { get; set; } = IntPtr.Zero;
-            public int ScanSize { get; set; } = 4096;
+            public IntPtr Address { get; set; } = Process.MainModule.BaseAddress;
+            public int ScanSize { get; set; } = Process.MainModule.ModuleMemorySize;
 
             /// <summary>
             ///     Looks for a pattern in memory and returns the address where the pattern matches
@@ -71,42 +89,84 @@ namespace ElertanCheatBase.Payload
             /// <returns></returns>
             public IntPtr Scan(string strPattern, int patternOffset = 0)
             {
-                var pattern = strPattern.Split(' ').Select(str =>
+                var currentAddress = Address;
+                var pattern = GetBytePatternByString(strPattern);
+
+                while (currentAddress.ToInt32() < Address.ToInt32() + ScanSize)
+                {
+                    var isReadableMemory = IsReadableMemory(currentAddress, out var regionSize);
+                    if (!isReadableMemory)
+                    {
+                        currentAddress = new IntPtr(currentAddress.ToInt32() + regionSize);
+                        continue;
+                    }
+                    byte[] buffer = new byte[regionSize];
+                    WinApi.ReadProcessMemory(Process.Handle, currentAddress, buffer, (int)regionSize, out var ptrNumberOfBytesRead);
+
+                    for (var i = 0; i < regionSize - pattern.Length; i++)
+                    {
+                        var foundBytes = true;
+                        for (var x = 0; x < pattern.Length; x++)
+                        {
+                            if (!pattern[x].HasValue) continue;
+
+                            if (pattern[x].Value != buffer[i + x])
+                            {
+                                foundBytes = false;
+                                break;
+                            }
+                        }
+
+                        if (foundBytes)
+                        {
+                            return new IntPtr(currentAddress.ToInt32() + i + patternOffset);
+                        }
+                    }
+
+                    currentAddress = new IntPtr(currentAddress.ToInt32() + regionSize);
+                }
+                throw new Exception("Bytes not found for given signature");
+            }
+
+            private static bool IsReadableMemory(IntPtr address, out uint regionSize)
+            {
+                const int MEM_COMMIT = 0x00001000;
+                const int MEM_PRIVATE = 0x20000;
+                const int PAGE_NOACCESS = 0x01;
+                const int PAGE_READONLY = 0x02;
+                const int PAGE_READWRITE = 0x04;
+                const int PAGE_GUARD = 0x100;
+
+
+                var ptr = new UIntPtr(Convert.ToUInt32(address.ToInt32()));
+                MEMORY_BASIC_INFORMATION mbi = new MEMORY_BASIC_INFORMATION();
+                WinApi.VirtualQuery(ref ptr, ref mbi, (int)PageSize);
+
+                regionSize = (uint)mbi.RegionSize.ToInt32();
+
+                return mbi.State == MEM_COMMIT
+                       //&& mbi.Protect == PAGE_READONLY || mbi.Protect == PAGE_READWRITE
+                       && mbi.Protect != PAGE_GUARD
+                       && mbi.Protect != PAGE_NOACCESS
+                       && mbi.Type == MEM_PRIVATE;
+            }
+
+            private static byte?[] GetBytePatternByString(string strPattern)
+            {
+                return strPattern.Split(' ').Select(str =>
                 {
                     var nullableConverter = new NullableConverter(typeof(byte?));
                     try
                     {
                         var value = Convert.ToByte(str, 16);
                         nullableConverter.ConvertFrom(value);
-                        return (byte?) nullableConverter.ConvertFrom(value);
+                        return (byte?)nullableConverter.ConvertFrom(value);
                     }
                     catch
                     {
                         return default(byte?);
                     }
                 }).ToArray();
-
-                for (var i = 0; i < ScanSize; i++)
-                {
-                    var patternMatch = true;
-                    for (var x = 0; x < pattern.Length; x++)
-                    {
-                        if (!pattern[x].HasValue) continue;
-
-                        if (pattern[x].Value != ReadByte(Address + i + x))
-                        {
-                            patternMatch = false;
-                            break;
-                        }
-                    }
-                    if (patternMatch)
-                    {
-                        var address = IntPtr.Add(Address, i);
-                        return address;
-                    }
-                    if (patternMatch) return IntPtr.Add(Address + patternOffset, i);
-                }
-                throw new Exception("Address not found for given pattern");
             }
         }
 
