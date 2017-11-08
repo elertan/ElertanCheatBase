@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="HookBase.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Models\Game.cs" />
     <Compile Include="Models\HitObject.cs" />
     <Compile Include="Models\OsuMap.cs" />
     <Compile Include="Models\TimingPoint.cs" />

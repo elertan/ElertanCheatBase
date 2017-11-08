@@ -98,7 +98,7 @@ namespace ElertanCheatBase.Payload
         public static extern int VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, uint dwLength);
         [DllImport("kernel32.dll")]
         public static extern int VirtualQuery(
-            ref UIntPtr lpAddress,
+            IntPtr lpAddress,
             ref MEMORY_BASIC_INFORMATION lpBuffer,
             int dwLength
         );

@@ -70,13 +70,28 @@ namespace ElertanCheatBase.Payload
 
         public static int ReadInt32(IntPtr address, int offset = 0) => Marshal.ReadInt32(address, offset);
 
+        public static void WriteBytes(IntPtr address, params byte[] bytes)
+        {
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                Marshal.WriteByte(IntPtr.Add(address, i), bytes[i]);
+            }
+        }
+
+        public static void WriteDouble(IntPtr address, double value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+            WriteBytes(address, bytes);
+        }
+
         /// <summary>
         ///     Provides methods and properties to find memory addresses from the current process.
         /// </summary>
         public class SignatureScanner
         {
+            // Should return the base address
             public IntPtr Address { get; set; } = Process.MainModule.BaseAddress;
-            public int ScanSize { get; set; } = Process.MainModule.ModuleMemorySize;
+            public long ScanSize { get; set; } = Process.PagedMemorySize64;
 
             /// <summary>
             ///     Looks for a pattern in memory and returns the address where the pattern matches
@@ -94,16 +109,19 @@ namespace ElertanCheatBase.Payload
 
                 while (currentAddress.ToInt32() < Address.ToInt32() + ScanSize)
                 {
+                
                     var isReadableMemory = IsReadableMemory(currentAddress, out var regionSize);
                     if (!isReadableMemory)
                     {
                         currentAddress = new IntPtr(currentAddress.ToInt32() + regionSize);
                         continue;
                     }
-                    byte[] buffer = new byte[regionSize];
-                    WinApi.ReadProcessMemory(Process.Handle, currentAddress, buffer, (int)regionSize, out var ptrNumberOfBytesRead);
+                    //var buffer = new byte[regionSize];
+                    //WinApi.ReadProcessMemory(Process.Handle, currentAddress, buffer, (int)regionSize, out var ptrNumberOfBytesRead);
 
-                    for (var i = 0; i < regionSize - pattern.Length; i++)
+                    var buffer = ReadBytes(currentAddress, (int)regionSize);
+
+                    for (var i = 0; i < regionSize; i++)
                     {
                         var foundBytes = true;
                         for (var x = 0; x < pattern.Length; x++)
@@ -125,30 +143,29 @@ namespace ElertanCheatBase.Payload
 
                     currentAddress = new IntPtr(currentAddress.ToInt32() + regionSize);
                 }
-                throw new Exception("Bytes not found for given signature");
+                return IntPtr.Zero;
             }
 
             private static bool IsReadableMemory(IntPtr address, out uint regionSize)
             {
                 const int MEM_COMMIT = 0x00001000;
                 const int MEM_PRIVATE = 0x20000;
+                const int MEM_IMAGE = 0x1000000;
                 const int PAGE_NOACCESS = 0x01;
                 const int PAGE_READONLY = 0x02;
                 const int PAGE_READWRITE = 0x04;
                 const int PAGE_GUARD = 0x100;
 
+                var mbi = new MEMORY_BASIC_INFORMATION();
 
-                var ptr = new UIntPtr(Convert.ToUInt32(address.ToInt32()));
-                MEMORY_BASIC_INFORMATION mbi = new MEMORY_BASIC_INFORMATION();
-                WinApi.VirtualQuery(ref ptr, ref mbi, (int)PageSize);
+                WinApi.VirtualQuery(address, ref mbi, Marshal.SizeOf<MEMORY_BASIC_INFORMATION>());
 
                 regionSize = (uint)mbi.RegionSize.ToInt32();
 
                 return mbi.State == MEM_COMMIT
-                       //&& mbi.Protect == PAGE_READONLY || mbi.Protect == PAGE_READWRITE
-                       && mbi.Protect != PAGE_GUARD
-                       && mbi.Protect != PAGE_NOACCESS
-                       && mbi.Type == MEM_PRIVATE;
+                    && !Convert.ToBoolean(mbi.Protect & PAGE_GUARD)
+                    && mbi.Protect > PAGE_NOACCESS
+                    && mbi.Type == MEM_PRIVATE;
             }
 
             private static byte?[] GetBytePatternByString(string strPattern)

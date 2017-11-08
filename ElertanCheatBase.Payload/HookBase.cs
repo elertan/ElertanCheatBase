@@ -10,10 +10,17 @@ namespace ElertanCheatBase.Payload
 {
     public class HookBase
     {
+        private bool _hasOpenedConsole;
+
         public HookBase(string secretKey)
         {
             if (secretKey != "alavon") throw new Exception("->PrivateAssembly<-");
             Main.KeepRunning = false;
+        }
+
+        ~HookBase()
+        {
+            Deinitialize(Process);
         }
 
         public Direct3D9ChamsController Direct3D9ChamsController { get; set; }
@@ -31,6 +38,13 @@ namespace ElertanCheatBase.Payload
             var encoding = Encoding.GetEncoding(MY_CODE_PAGE);
             var standardOutput = new StreamWriter(fileStream, encoding) {AutoFlush = true};
             Console.SetOut(standardOutput);
+
+            _hasOpenedConsole = true;
+        }
+
+        public void FreeConsole()
+        {
+            WinApi.FreeConsole();
         }
 
         public void Exit()
@@ -45,6 +59,14 @@ namespace ElertanCheatBase.Payload
             if (Core.VisualRenderType == VisualRenderType.Direct3D9)
             {
                 Direct3D9ChamsController = new Direct3D9ChamsController();
+            }
+        }
+
+        public virtual void Deinitialize(Process p)
+        {
+            if (_hasOpenedConsole)
+            {
+                FreeConsole();
             }
         }
 

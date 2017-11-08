@@ -38,8 +38,7 @@ namespace ElertanCheatBase.Csgo
             var cheatBase = new CheatBase("csgo")
             {
                 InternalMode = true,
-                InternalPayloadPath = Payload.Main.AssemblyPath,
-                VisualRenderType = VisualRenderType.Direct3D9
+                InternalPayloadPath = Payload.Main.AssemblyPath
             };
             // Run
             try
