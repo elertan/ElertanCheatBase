@@ -26,10 +26,15 @@ namespace OsuBot.Payload
             base.Initialize(p);
 
             OpenConsole();
+
             while (true)
             {
-                Console.WriteLine(Game.SongTime);
-                Thread.Sleep(50);
+                var songTime = TimeSpan.FromMilliseconds(Game.SongTime);
+                
+                Console.WriteLine("Hi! This bot only shows time as of now.");
+                Console.WriteLine($"Current song time: {songTime.ToString()}");
+                Thread.Sleep(500);
+                Console.Clear();
             }
         }
     }
